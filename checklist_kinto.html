@@ -443,19 +443,143 @@ function setVars(data) {
 }
 
 /* ─── INIT ─── */
+/* ─── BODY TYPE → VEHICLE IMAGE KEY MAP ─── */
+const BODY_TYPE_MAP = {
+  'SEDAN':      'SEDAN',
+  'SUV':        'SUV',
+  'SUV2':       'SUV2',
+  'HATCHBACK':  'HATCHBACK',
+  'PICKUP':     'PICKUP',
+  'UTILITARIO': 'UTILITARIO',
+};
+
+/* ─── FORMAT DATE STRING (ISO or locale string) ─── */
+function fmtDate(dateStr) {
+  if (!dateStr || dateStr === '—') return '—';
+  try {
+    // already formatted like "11 jun. 2026" — return as is
+    if (isNaN(Date.parse(dateStr))) return dateStr;
+    const d = new Date(dateStr);
+    return d.toLocaleDateString('es-AR', {day:'numeric', month:'short', year:'numeric'});
+  } catch(e) { return dateStr; }
+}
+
+/* ─── TIRE TABLE for checklist ─── */
+function buildTireTable(tires, accs) {
+  let html = '';
+
+  if (tires && tires.length) {
+    html += '<div style="margin-top:8px">';
+    html += '<div style="font-size:7px;font-weight:700;text-transform:uppercase;letter-spacing:.1em;color:#999;margin-bottom:4px">Neumáticos</div>';
+    html += '<table style="width:100%;border-collapse:collapse;font-size:9px">';
+    html += '<tr style="background:#f5f5f5"><th style="padding:2px 5px;text-align:left;font-weight:600;border:0.5px solid #ddd">Posición</th><th style="padding:2px 5px;text-align:left;font-weight:600;border:0.5px solid #ddd">N°</th><th style="padding:2px 5px;text-align:left;font-weight:600;border:0.5px solid #ddd">Marca</th><th style="padding:2px 5px;text-align:left;font-weight:600;border:0.5px solid #ddd">Rodado</th><th style="padding:2px 5px;text-align:left;font-weight:600;border:0.5px solid #ddd">DOT</th><th style="padding:2px 5px;text-align:left;font-weight:600;border:0.5px solid #ddd">Km</th></tr>';
+    tires.forEach(function(t) {
+      html += '<tr>';
+      html += '<td style="padding:2px 5px;border:0.5px solid #e8e8e8">' + (t.posicion || '—') + '</td>';
+      html += '<td style="padding:2px 5px;border:0.5px solid #e8e8e8;font-weight:700;font-family:monospace">' + (t.numero || '—') + '</td>';
+      html += '<td style="padding:2px 5px;border:0.5px solid #e8e8e8">' + (t.marca || '—') + '</td>';
+      html += '<td style="padding:2px 5px;border:0.5px solid #e8e8e8">' + (t.rodado || '—') + '</td>';
+      html += '<td style="padding:2px 5px;border:0.5px solid #e8e8e8">' + (t.dot || '—') + '</td>';
+      html += '<td style="padding:2px 5px;border:0.5px solid #e8e8e8">' + (t.km || '—') + '</td>';
+      html += '</tr>';
+    });
+    html += '</table></div>';
+  }
+
+  if (accs && accs.filter(a => a.tipo || a.numero).length) {
+    html += '<div style="margin-top:6px">';
+    html += '<div style="font-size:7px;font-weight:700;text-transform:uppercase;letter-spacing:.1em;color:#999;margin-bottom:3px">Accesorios</div>';
+    html += '<div style="display:flex;flex-wrap:wrap;gap:3px">';
+    accs.filter(a => a.tipo || a.numero).forEach(function(a) {
+      html += '<span style="background:#f0f0f0;border:0.5px solid #ddd;border-radius:3px;padding:1px 6px;font-size:9px">';
+      html += (a.tipo || '') + (a.numero ? ' — ' + a.numero : '');
+      html += '</span>';
+    });
+    html += '</div></div>';
+  }
+
+  return html;
+}
+
+/* ─── AUTO-LOAD FROM FLEET CALENDAR ─── */
 window.addEventListener('load', () => {
-  selectVehicle('HATCHBACK');
   [1,2,3].forEach(n => {
     document.getElementById('img-'+n).addEventListener('load', syncSVG);
   });
-});
 
-/* ─── DEMO DATA ─── */
-setVars({
-  dominio:'AB 123 CD', resid:'l8mz66g', entrega:'11/06/2025 · 09:42',
-  fin:'30/06/2025 · 11:00',
-  km:'47.320', usuario:'J. García', cap:'45 L', hora:'__:__',
-  tire_fl:'AT201', tire_fr:'AT202', tire_rl:'AT203', tire_rr:'AT204'
+  const raw = localStorage.getItem('fleetcal_checklist_data');
+
+  if (raw) {
+    /* ── Data from Fleet Calendar ── */
+    try {
+      const d = JSON.parse(raw);
+      localStorage.removeItem('fleetcal_checklist_data'); // single-use
+
+      /* Select vehicle image by bodyType */
+      const vkey = (d.bodyType && BODY_TYPE_MAP[d.bodyType])
+        ? BODY_TYPE_MAP[d.bodyType]
+        : 'HATCHBACK';
+      selectVehicle(vkey);
+
+      /* Populate fields */
+      setVars({
+        dominio: d.plate     || '— — —',
+        resid:   d.resid     || '—',
+        entrega: (d.startDate || '—') + (d.startTime ? '  ·  ' + d.startTime : ''),
+        fin:     (d.endDate   || '—') + (d.endTime   ? '  ·  ' + d.endTime   : ''),
+        km:      d.km        || '—',
+        usuario: d.renter    || '—',
+        cap:     d.tankCap   ? d.tankCap + ' L' : '—',
+        hora:    d.startTime || '__:__',
+      });
+
+      /* Update page title */
+      if (d.plate) {
+        document.title = 'KINTO Share · ' + d.plate + ' · Check List';
+      }
+
+      /* Inject tire numbers into tire fields if present */
+      if (d.tireNums && d.tireNums.length >= 1) setVars({ tire_fl: d.tireNums[0] || '—' });
+      if (d.tireNums && d.tireNums.length >= 2) setVars({ tire_fr: d.tireNums[1] || '—' });
+      if (d.tireNums && d.tireNums.length >= 3) setVars({ tire_rl: d.tireNums[2] || '—' });
+      if (d.tireNums && d.tireNums.length >= 4) setVars({ tire_rr: d.tireNums[3] || '—' });
+
+      /* Inject full tire + accessories table */
+      if ((d.tires && d.tires.length) || (d.accesorios && d.accesorios.length)) {
+        const tireHTML = buildTireTable(d.tires || [], d.accesorios || []);
+        if (tireHTML) {
+          /* Look for existing tire section or append before footer */
+          let tireSection = document.getElementById('checklist-tires');
+          if (!tireSection) {
+            tireSection = document.createElement('div');
+            tireSection.id = 'checklist-tires';
+            tireSection.style.cssText = 'margin:8px 16px 0;padding:8px 12px;background:#fafafa;border:0.5px solid #e0e0e0;border-radius:5px;page-break-inside:avoid';
+            const terms = document.querySelector('.terms') || document.querySelector('.sig-block') || document.body.lastElementChild;
+            if (terms && terms.parentNode) {
+              terms.parentNode.insertBefore(tireSection, terms);
+            } else {
+              document.body.appendChild(tireSection);
+            }
+          }
+          tireSection.innerHTML = tireHTML;
+        }
+      }
+
+    } catch(e) {
+      console.error('Fleet Calendar data load error:', e);
+      selectVehicle('HATCHBACK');
+    }
+
+  } else {
+    /* ── No data: show demo ── */
+    selectVehicle('HATCHBACK');
+    setVars({
+      dominio:'AB 123 CD', resid:'RES-00123', entrega:'11/06/2026  ·  09:42',
+      fin:'30/06/2026  ·  11:00',
+      km:'47.320', usuario:'J. García', cap:'45 L', hora:'09:42',
+      tire_fl:'AT201', tire_fr:'AT202', tire_rl:'AT203', tire_rr:'AT204'
+    });
+  }
 });
 </script>
 </body>
