@@ -4,196 +4,672 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Fleet Calendar — Retiro CERRITO CAR</title>
+<!-- UI/UX Pro Max: Inter + JetBrains Mono — dashboard operations pairing -->
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@2.44.0/tabler-icons.min.css">
 <style>
-*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
-:root{
-  --bg:#f8f7f5;--surface:#ffffff;--surface2:#f2f1ef;--border:rgba(0,0,0,0.08);--border-s:rgba(0,0,0,0.15);
-  --text:#1a1a18;--text2:#6b6a66;--text3:#a09f9b;
-  --accent:#1D9E75;--accent-l:#E1F5EE;
-  --c-current:#3a6e10;--cl-current:#d6edbb;
-  --c-new:#c04a1a;--cl-new:#fde3d5;
-  --c-future:#534AB7;--cl-future:#dddcf8;
-  --c-service:#9a6000;--cl-service:#fde8b5;
-  --c-booked:#185FA5;--cl-booked:#cce2f7;
-  --col-label:210px;--col-maint:148px;--day-w:27px;--cell-h:56px;--header-h:44px;--radius:8px;
-}
-@media(prefers-color-scheme:dark){:root{
-  --bg:#1a1a18;--surface:#242422;--surface2:#2c2c2a;--border:rgba(255,255,255,0.07);--border-s:rgba(255,255,255,0.14);
-  --text:#e8e7e3;--text2:#9f9e9a;--text3:#6b6a66;--accent-l:#085041;
-  --cl-current:#1a3a08;--cl-new:#3d1508;--cl-future:#1e1c4a;--cl-service:#3a2400;--cl-booked:#092340;
-}}
-body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;background:var(--bg);color:var(--text);min-height:100vh}
+/*
+ * Design System — Fleet Operations Dashboard
+ * ui-ux-pro-max-skill · style: AI-Native + Glassmorphism subtle
+ * product-type: fleet-logistics-dashboard
+ * palette: deep-navy × carbon × operative-teal × amber-alert
+ * typography: Inter (UI) + JetBrains Mono (codes/KPIs) — weight-hierarchy applied
+ * ux-rules: semantic tokens · WCAG AA · color-not-decorative-only · dark desaturated
+ */
 
-/* top bar */
-.topbar{background:var(--surface);border-bottom:0.5px solid var(--border-s);padding:0 24px;height:52px;display:flex;align-items:center;justify-content:space-between;position:sticky;top:0;z-index:100}
-.brand{display:flex;align-items:center;gap:8px;font-size:13px;font-weight:500}
-.dot{width:7px;height:7px;border-radius:50%;background:var(--accent)}
-.sub{font-size:11px;color:var(--text2);font-weight:400;margin-left:6px}
-.tr{display:flex;align-items:center;gap:10px}
-.datebadge{font-size:11px;color:var(--text2)}
-.filebtn{font-size:11px;color:var(--text2);background:var(--surface2);border:0.5px solid var(--border-s);border-radius:5px;padding:4px 9px;cursor:pointer;display:flex;align-items:center;gap:4px;white-space:nowrap;transition:background .12s}
-.filebtn:hover{background:var(--border)}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+
+/* ── SEMANTIC COLOR TOKENS (light) ── */
+:root{
+  /* surfaces */
+  --bg:         #f0f2f5;
+  --surface:    #ffffff;
+  --surface2:   #f5f6f8;
+  --surface3:   #eceef2;
+  --glass:      rgba(255,255,255,0.72);
+
+  /* borders */
+  --border:     rgba(0,0,0,0.07);
+  --border-s:   rgba(0,0,0,0.13);
+  --border-m:   rgba(0,0,0,0.20);
+
+  /* text hierarchy — weight-hierarchy rule applied */
+  --text:       #0f1117;   /* display/headline 700 */
+  --text2:      #4a5568;   /* body 400 */
+  --text3:      #8a95a3;   /* label/caption 400 */
+  --text-inv:   #ffffff;
+
+  /* semantic primary — operative teal */
+  --accent:     #0d9488;
+  --accent-2:   #0f766e;
+  --accent-l:   #ccfbf1;
+  --accent-mid: rgba(13,148,136,0.12);
+
+  /* semantic status tokens — color-not-decorative-only rule */
+  --c-current:  #166534;  /* active reservation — green */
+  --cl-current: #dcfce7;
+  --c-new:      #9a3412;  /* new/starting — orange */
+  --cl-new:     #ffedd5;
+  --c-future:   #3730a3;  /* future — indigo */
+  --cl-future:  #e0e7ff;
+  --c-service:  #92400e;  /* service/maintenance — amber */
+  --cl-service: #fef3c7;
+  --c-error:    #b91c1c;  /* error/alert — red */
+  --cl-error:   #fee2e2;
+  --c-booked:   #1e40af;  /* booked/location — blue */
+  --cl-booked:  #dbeafe;
+
+  /* layout */
+  --col-label:  216px;
+  --col-maint:  152px;
+  --day-w:      28px;
+  --cell-h:     58px;
+  --header-h:   46px;
+  --radius:     10px;
+  --radius-sm:  6px;
+  --radius-lg:  14px;
+
+  /* elevation — glassmorphism subtle */
+  --shadow-sm:  0 1px 3px rgba(0,0,0,.08), 0 1px 2px rgba(0,0,0,.05);
+  --shadow-md:  0 4px 16px rgba(0,0,0,.10), 0 2px 6px rgba(0,0,0,.06);
+  --shadow-lg:  0 12px 40px rgba(0,0,0,.14), 0 4px 12px rgba(0,0,0,.08);
+}
+
+/* ── SEMANTIC COLOR TOKENS (dark) — desaturated per ui-ux-pro-max rule ── */
+@media(prefers-color-scheme:dark){:root{
+  --bg:         #0d0f14;
+  --surface:    #161920;
+  --surface2:   #1e2230;
+  --surface3:   #252a38;
+  --glass:      rgba(22,25,32,0.80);
+
+  --border:     rgba(255,255,255,0.06);
+  --border-s:   rgba(255,255,255,0.11);
+  --border-m:   rgba(255,255,255,0.18);
+
+  --text:       #e8eaf0;
+  --text2:      #8892a4;
+  --text3:      #4e5a6e;
+  --text-inv:   #0d0f14;
+
+  --accent:     #14b8a6;
+  --accent-2:   #0d9488;
+  --accent-l:   rgba(20,184,166,0.15);
+  --accent-mid: rgba(20,184,166,0.10);
+
+  /* dark: desaturated tonal variants — not inverted */
+  --c-current:  #4ade80;  --cl-current: rgba(74,222,128,0.12);
+  --c-new:      #fb923c;  --cl-new:     rgba(251,146,60,0.12);
+  --c-future:   #818cf8;  --cl-future:  rgba(129,140,248,0.12);
+  --c-service:  #fbbf24;  --cl-service: rgba(251,191,36,0.12);
+  --c-error:    #f87171;  --cl-error:   rgba(248,113,113,0.12);
+  --c-booked:   #60a5fa;  --cl-booked:  rgba(96,165,250,0.12);
+
+  --shadow-sm:  0 1px 3px rgba(0,0,0,.30);
+  --shadow-md:  0 4px 16px rgba(0,0,0,.40);
+  --shadow-lg:  0 12px 40px rgba(0,0,0,.55);
+}}
+
+/* ── BASE ── */
+body{
+  font-family:'Inter',system-ui,-apple-system,sans-serif;
+  font-size:13px;
+  line-height:1.5;
+  background:var(--bg);
+  color:var(--text);
+  min-height:100vh;
+  -webkit-font-smoothing:antialiased;
+}
+code,kbd,.mono{font-family:'JetBrains Mono',ui-monospace,monospace}
+
+/* ── TOPBAR — glass morphism subtle ── */
+.topbar{
+  background:var(--glass);
+  backdrop-filter:blur(16px);
+  -webkit-backdrop-filter:blur(16px);
+  border-bottom:1px solid var(--border-s);
+  padding:0 24px;
+  height:54px;
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  position:sticky;
+  top:0;
+  z-index:100;
+  box-shadow:var(--shadow-sm);
+}
+.brand{display:flex;align-items:center;gap:10px}
+.brand-logo{
+  width:28px;height:28px;border-radius:7px;
+  background:linear-gradient(135deg,var(--accent),var(--accent-2));
+  display:flex;align-items:center;justify-content:center;
+  box-shadow:0 2px 8px rgba(13,148,136,.35);
+}
+.brand-logo i{color:#fff;font-size:14px}
+.brand-name{font-size:13px;font-weight:600;letter-spacing:-.02em;color:var(--text)}
+.brand-sep{width:1px;height:16px;background:var(--border-s)}
+.brand-sub{font-size:11px;color:var(--text3);font-weight:400}
+.dot{display:none} /* replaced by logo */
+.sub{display:none}
+.tr{display:flex;align-items:center;gap:8px}
+.datebadge{font-size:11px;color:var(--text3);font-family:'JetBrains Mono',monospace;letter-spacing:-.01em}
+
+/* file/action buttons */
+.filebtn{
+  font-size:11px;font-weight:500;
+  color:var(--text2);
+  background:var(--surface2);
+  border:1px solid var(--border-s);
+  border-radius:var(--radius-sm);
+  padding:5px 10px;
+  cursor:pointer;
+  display:flex;align-items:center;gap:5px;
+  white-space:nowrap;
+  transition:all .15s;
+  font-family:'Inter',sans-serif;
+}
+.filebtn:hover{background:var(--surface3);border-color:var(--border-m);color:var(--text)}
 input[type=file]{display:none}
 
-/* stats */
-.stats{display:grid;grid-template-columns:repeat(5,1fr);gap:1px;background:var(--border);border-bottom:0.5px solid var(--border-s)}
-.sc{background:var(--surface);padding:12px 18px}
-.sl{font-size:10px;color:var(--text2);text-transform:uppercase;letter-spacing:.06em;margin-bottom:3px}
-.sv{font-size:20px;font-weight:500;letter-spacing:-.03em;line-height:1}
-.ss{font-size:10px;color:var(--text3);margin-top:2px}
+/* source status badges */
+.src-badge{
+  display:flex;align-items:center;gap:5px;
+  font-size:10px;font-weight:500;
+  padding:4px 9px;
+  border-radius:var(--radius-sm);
+  border:1px solid var(--border-s);
+  background:var(--surface2);
+  cursor:pointer;
+  transition:all .15s;
+  white-space:nowrap;
+  letter-spacing:.01em;
+}
+.src-badge:hover{background:var(--surface3);border-color:var(--border-m)}
+.src-dot{width:6px;height:6px;border-radius:50%;flex-shrink:0;background:var(--text3);transition:background .3s}
+.src-dot.ok{background:#22c55e;box-shadow:0 0 6px rgba(34,197,94,.5)}
+.src-dot.err{background:#ef4444}
+.src-dot.loading{background:#f59e0b;animation:pulse-dot .8s ease-in-out infinite}
+@keyframes pulse-dot{0%,100%{opacity:1;transform:scale(1)}50%{opacity:.5;transform:scale(.7)}}
 
-/* main */
-.main{padding:20px 24px 48px}
+/* ── KPI STATS ROW — bento-grid style ── */
+.stats{
+  display:grid;
+  grid-template-columns:repeat(5,1fr);
+  gap:1px;
+  background:var(--border);
+  border-bottom:1px solid var(--border-s);
+}
+.sc{
+  background:var(--surface);
+  padding:14px 20px;
+  position:relative;
+  overflow:hidden;
+  transition:background .15s;
+}
+.sc::before{
+  content:'';
+  position:absolute;inset:0;
+  background:linear-gradient(135deg,transparent 60%,rgba(13,148,136,.03) 100%);
+  pointer-events:none;
+}
+.sl{
+  font-size:10px;font-weight:600;
+  color:var(--text3);
+  text-transform:uppercase;
+  letter-spacing:.08em;
+  margin-bottom:5px;
+}
+.sv{
+  font-size:24px;font-weight:700;
+  letter-spacing:-.04em;
+  line-height:1;
+  color:var(--text);
+  font-family:'Inter',sans-serif;
+}
+.ss{font-size:10px;color:var(--text3);margin-top:4px;font-weight:400}
 
-/* month nav */
-.mnav{display:flex;align-items:center;gap:10px;margin-bottom:16px}
-.mtitle{font-size:15px;font-weight:500;min-width:130px}
-.nbtn{width:26px;height:26px;border:0.5px solid var(--border-s);border-radius:5px;background:var(--surface);color:var(--text);cursor:pointer;display:flex;align-items:center;justify-content:center;font-size:13px;transition:background .12s}
-.nbtn:hover{background:var(--surface2)}
-.tbtn{font-size:10px;width:auto;padding:0 8px;height:26px}
+/* ── MAIN ── */
+.main{padding:22px 24px 56px}
 
-/* calendar */
-.calwrap{background:var(--surface);border:0.5px solid var(--border-s);border-radius:var(--radius);overflow:hidden}
+/* ── MONTH NAV ── */
+.mnav{display:flex;align-items:center;gap:10px;margin-bottom:18px}
+.mtitle{
+  font-size:16px;font-weight:600;
+  min-width:138px;
+  letter-spacing:-.02em;
+  color:var(--text);
+}
+.nbtn{
+  width:28px;height:28px;
+  border:1px solid var(--border-s);
+  border-radius:var(--radius-sm);
+  background:var(--surface);
+  color:var(--text2);
+  cursor:pointer;
+  display:flex;align-items:center;justify-content:center;
+  font-size:13px;
+  transition:all .15s;
+  box-shadow:var(--shadow-sm);
+}
+.nbtn:hover{background:var(--surface2);border-color:var(--border-m);color:var(--text)}
+.tbtn{font-size:10px;font-weight:600;width:auto;padding:0 10px;height:28px;
+  color:var(--accent);border-color:var(--accent-l);background:var(--accent-mid)}
+.tbtn:hover{background:var(--accent-l);color:var(--accent-2)}
+
+/* ── CALENDAR TABLE ── */
+.calwrap{
+  background:var(--surface);
+  border:1px solid var(--border-s);
+  border-radius:var(--radius);
+  overflow:hidden;
+  box-shadow:var(--shadow-md);
+}
 .calscroll{overflow-x:auto}
 .caltable{border-collapse:collapse}
 
-/* sticky cols */
-.clth{width:var(--col-label);min-width:var(--col-label);background:var(--surface);border-right:0.5px solid var(--border-s);position:sticky;left:0;z-index:11;padding:0 12px;height:var(--header-h);vertical-align:middle}
-.cmth{width:var(--col-maint);min-width:var(--col-maint);background:var(--surface);border-right:0.5px solid var(--border-s);position:sticky;left:var(--col-label);z-index:11;padding:0 10px;height:var(--header-h);vertical-align:middle;text-align:left}
-.cltd{background:var(--surface);border-right:0.5px solid var(--border-s);padding:6px 12px;position:sticky;left:0;z-index:9;border-bottom:0.5px solid var(--border);vertical-align:top}
-.cmtd{background:var(--surface);border-right:0.5px solid var(--border-s);padding:6px 10px;position:sticky;left:var(--col-label);z-index:9;border-bottom:0.5px solid var(--border);vertical-align:top;min-width:var(--col-maint)}
+/* sticky label cols */
+.clth{
+  width:var(--col-label);min-width:var(--col-label);
+  background:var(--surface);
+  border-right:1px solid var(--border-s);
+  position:sticky;left:0;z-index:11;
+  padding:0 14px;height:var(--header-h);vertical-align:middle;
+}
+.cmth{
+  width:var(--col-maint);min-width:var(--col-maint);
+  background:var(--surface);
+  border-right:1px solid var(--border-s);
+  position:sticky;left:var(--col-label);z-index:11;
+  padding:0 10px;height:var(--header-h);vertical-align:middle;text-align:left;
+}
+.cltd{
+  background:var(--surface);
+  border-right:1px solid var(--border-s);
+  padding:7px 14px;
+  position:sticky;left:0;z-index:9;
+  border-bottom:1px solid var(--border);
+  vertical-align:top;
+}
+.cmtd{
+  background:var(--surface);
+  border-right:1px solid var(--border-s);
+  padding:7px 10px;
+  position:sticky;left:var(--col-label);z-index:9;
+  border-bottom:1px solid var(--border);
+  vertical-align:top;
+  min-width:var(--col-maint);
+}
 
 /* day headers */
-.dayth{width:var(--day-w);min-width:var(--day-w);height:var(--header-h);text-align:center;vertical-align:bottom;padding-bottom:6px;border-right:0.5px solid var(--border);border-bottom:0.5px solid var(--border-s);font-size:9px;color:var(--text3);font-weight:400;line-height:1.2;background:var(--surface)}
-.dayth .dn{display:block;font-size:11px;font-weight:500;color:var(--text2);line-height:1;margin-bottom:2px}
+.dayth{
+  width:var(--day-w);min-width:var(--day-w);
+  height:var(--header-h);
+  text-align:center;vertical-align:bottom;
+  padding-bottom:7px;
+  border-right:1px solid var(--border);
+  border-bottom:1px solid var(--border-s);
+  font-size:9px;font-weight:500;
+  color:var(--text3);
+  line-height:1.2;
+  background:var(--surface);
+  transition:background .12s;
+}
+.dayth .dn{
+  display:block;font-size:12px;font-weight:600;
+  color:var(--text2);line-height:1;margin-bottom:2px;
+  font-family:'JetBrains Mono',monospace;
+}
+.dayth.tcol{background:var(--accent-mid)!important}
 .dayth.tcol .dn{color:var(--accent)}
-.dayth.tcol{background:var(--accent-l)!important}
 .dayth.wk{background:var(--surface2)}
 
-/* rows */
-.vrow{border-bottom:0.5px solid var(--border)}
+/* vehicle rows */
+.vrow{border-bottom:1px solid var(--border);transition:background .1s}
 .vrow:last-child{border-bottom:none}
-.vname{font-size:11px;font-weight:500;color:var(--text);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;display:block}
+.vrow:hover .cltd,.vrow:hover .cmtd{background:var(--surface2)}
 
-/* plate highlight */
-.vplate{font-size:10px;display:block;margin-top:2px;display:flex;align-items:center;gap:4px;flex-wrap:wrap}
-.plate-tag{font-family:'SF Mono',ui-monospace,monospace;font-size:10px;font-weight:600;letter-spacing:.04em;color:#1a3a7a;background:#ddeafc;border:0.5px solid #aac4ef;border-radius:4px;padding:1px 6px;display:inline-block}
-@media(prefers-color-scheme:dark){.plate-tag{color:#93bdf5;background:#0d2340;border-color:#2a4a70}}
-.plate-loc{font-size:10px}
+/* vehicle name — weight-hierarchy: 600 heading */
+.vname{
+  font-size:11px;font-weight:600;
+  color:var(--text);
+  white-space:nowrap;overflow:hidden;text-overflow:ellipsis;
+  display:block;
+  letter-spacing:-.01em;
+}
+
+/* plate tag — JetBrains Mono for codes/IDs */
+.vplate{font-size:10px;display:flex;align-items:center;gap:5px;flex-wrap:wrap;margin-top:3px}
+.plate-tag{
+  font-family:'JetBrains Mono',monospace;
+  font-size:10px;font-weight:600;
+  letter-spacing:.06em;
+  color:var(--c-booked);
+  background:var(--cl-booked);
+  border:1px solid rgba(30,64,175,.2);
+  border-radius:4px;
+  padding:1px 7px;
+  display:inline-block;
+}
+@media(prefers-color-scheme:dark){
+  .plate-tag{color:var(--c-booked);background:var(--cl-booked);border-color:rgba(96,165,250,.2)}
+}
+.plate-loc{font-size:10px;font-weight:500}
 
 /* telem row */
-.vtelrow{display:flex;align-items:center;gap:8px;margin-top:3px;flex-wrap:wrap}
-.vti{font-size:9px;color:var(--text3);display:inline-flex;align-items:center;gap:2px}
-.fbar-track{display:inline-block;width:30px;height:4px;background:var(--border-s);border-radius:2px;overflow:hidden;vertical-align:middle}
-.fbar-fill{display:block;height:100%;border-radius:2px}
-
-/* transfer alert */
-.vrow-alert .dcell{background:rgba(255,180,0,0.06)!important}
-.vrow-alert .dcell.wk{background:rgba(255,180,0,0.10)!important}
-.vrow-alert .cltd,.vrow-alert .cmtd{border-left:2.5px solid #d97706!important}
-.transfer-badge{display:inline-flex;align-items:center;gap:4px;font-size:9px;font-weight:500;color:#92400e;background:#fef3c7;border:0.5px solid #f59e0b;border-radius:4px;padding:1px 6px;margin-top:3px;margin-bottom:1px;animation:pulse-badge 2s ease-in-out infinite}
-@media(prefers-color-scheme:dark){
-  .transfer-badge{color:#fbbf24;background:rgba(251,191,36,0.15);border-color:rgba(251,191,36,0.4)}
-  .vrow-alert .dcell{background:rgba(251,191,36,0.06)!important}
+.vtelrow{display:flex;align-items:center;gap:8px;margin-top:4px;flex-wrap:wrap}
+.vti{font-size:9px;color:var(--text3);display:inline-flex;align-items:center;gap:2px;font-weight:400}
+.fbar-track{
+  display:inline-block;width:32px;height:3px;
+  background:var(--border-s);border-radius:2px;overflow:hidden;vertical-align:middle;
 }
-@keyframes pulse-badge{0%,100%{opacity:1}50%{opacity:.65}}
+.fbar-fill{display:block;height:100%;border-radius:2px;transition:width .4s ease}
+
+/* ── TRANSFER ALERT ── */
+.vrow-alert .dcell{background:rgba(251,191,36,.05)!important}
+.vrow-alert .dcell.wk{background:rgba(251,191,36,.09)!important}
+.vrow-alert .cltd,.vrow-alert .cmtd{
+  border-left:3px solid #f59e0b!important;
+  background:rgba(251,191,36,.03)!important;
+}
+.transfer-badge{
+  display:inline-flex;align-items:center;gap:4px;
+  font-size:9px;font-weight:600;letter-spacing:.01em;
+  color:#92400e;
+  background:linear-gradient(135deg,#fef9c3,#fef3c7);
+  border:1px solid rgba(245,158,11,.4);
+  border-radius:5px;
+  padding:2px 7px;
+  margin-top:3px;margin-bottom:2px;
+  animation:pulse-badge 2.2s ease-in-out infinite;
+  box-shadow:0 1px 4px rgba(245,158,11,.15);
+}
+@media(prefers-color-scheme:dark){
+  .transfer-badge{color:#fbbf24;background:rgba(251,191,36,.12);border-color:rgba(251,191,36,.3)}
+  .vrow-alert .dcell{background:rgba(251,191,36,.05)!important}
+}
+@keyframes pulse-badge{0%,100%{opacity:1;box-shadow:0 1px 4px rgba(245,158,11,.15)}50%{opacity:.7;box-shadow:0 1px 8px rgba(245,158,11,.30)}}
 .transfer-detail{display:block;font-size:9px;color:var(--text3);margin-top:2px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 
 /* ── MAINTENANCE COLUMN ── */
-.maint-alert{display:flex;align-items:flex-start;gap:5px;background:#fff1f0;border:0.5px solid #fca5a5;border-radius:5px;padding:4px 7px;cursor:pointer;transition:background .12s}
-.maint-alert:hover{background:#ffe4e1}
-@media(prefers-color-scheme:dark){
-  .maint-alert{background:#3a0e0e;border-color:#7f1d1d}
-  .maint-alert:hover{background:#4a1515}
+.maint-alert{
+  display:flex;align-items:flex-start;gap:6px;
+  background:linear-gradient(135deg,#fff1f0,#fee2e2);
+  border:1px solid rgba(185,28,28,.2);
+  border-radius:var(--radius-sm);
+  padding:5px 8px;cursor:pointer;
+  transition:all .15s;
+  box-shadow:0 1px 3px rgba(185,28,28,.08);
 }
-.maint-alert-icon{font-size:12px;color:#dc2626;flex-shrink:0;margin-top:1px}
-.maint-alert-text{font-size:9px;line-height:1.4}
-.maint-alert-title{font-weight:600;color:#dc2626;display:block}
-.maint-alert-km{color:var(--text2);display:block}
+.maint-alert:hover{background:linear-gradient(135deg,#fee2e2,#fecaca);border-color:rgba(185,28,28,.35)}
+@media(prefers-color-scheme:dark){
+  .maint-alert{background:rgba(185,28,28,.12);border-color:rgba(248,113,113,.2)}
+  .maint-alert:hover{background:rgba(185,28,28,.20)}
+}
+.maint-alert-icon{font-size:13px;color:var(--c-error);flex-shrink:0;margin-top:1px}
+.maint-alert-text{font-size:9px;line-height:1.45}
+.maint-alert-title{font-weight:700;color:var(--c-error);display:block;letter-spacing:.01em}
+.maint-alert-km{color:var(--text2);display:block;margin-top:1px}
 .maint-ok{font-size:9px;color:var(--text3);display:flex;align-items:center;gap:4px}
 .maint-last{font-size:9px;color:var(--text3);margin-top:3px;display:block}
 
-/* register button */
-.maint-register-btn{display:inline-flex;align-items:center;gap:3px;font-size:9px;font-weight:500;color:var(--accent);background:var(--accent-l);border:0.5px solid var(--accent);border-radius:4px;padding:2px 6px;cursor:pointer;margin-top:4px;transition:background .12s;font-family:inherit}
-.maint-register-btn:hover{background:#c8eeda}
-
-/* history badge */
-.maint-hist-btn{display:inline-flex;align-items:center;gap:3px;font-size:9px;color:var(--text3);background:none;border:none;cursor:pointer;padding:2px 0;font-family:inherit;margin-top:2px}
+.maint-register-btn{
+  display:inline-flex;align-items:center;gap:3px;
+  font-size:9px;font-weight:600;
+  color:var(--accent);
+  background:var(--accent-mid);
+  border:1px solid rgba(13,148,136,.25);
+  border-radius:4px;padding:2px 7px;
+  cursor:pointer;margin-top:4px;
+  transition:all .15s;font-family:'Inter',sans-serif;
+}
+.maint-register-btn:hover{background:var(--accent-l);border-color:var(--accent)}
+.maint-hist-btn{
+  display:inline-flex;align-items:center;gap:3px;
+  font-size:9px;color:var(--text3);
+  background:none;border:none;cursor:pointer;
+  padding:2px 0;font-family:'Inter',sans-serif;margin-top:2px;
+}
 .maint-hist-btn:hover{color:var(--text2)}
 
-/* ── MODAL ── */
-.modal-overlay{position:fixed;inset:0;background:rgba(0,0,0,0.45);z-index:1000;display:flex;align-items:center;justify-content:center;padding:16px}
-.modal{background:var(--surface);border:0.5px solid var(--border-s);border-radius:10px;width:100%;max-width:380px;overflow:hidden;box-shadow:0 8px 32px rgba(0,0,0,.2)}
-.modal-head{padding:16px 18px 12px;border-bottom:0.5px solid var(--border)}
-.modal-title{font-size:13px;font-weight:600}
+/* ── MODAL — elevated glass ── */
+.modal-overlay{
+  position:fixed;inset:0;
+  background:rgba(0,0,0,.5);
+  backdrop-filter:blur(4px);
+  z-index:1000;
+  display:flex;align-items:center;justify-content:center;padding:16px;
+}
+.modal{
+  background:var(--surface);
+  border:1px solid var(--border-s);
+  border-radius:var(--radius-lg);
+  width:100%;max-width:390px;
+  overflow:hidden;
+  box-shadow:var(--shadow-lg);
+}
+.modal-head{padding:18px 20px 13px;border-bottom:1px solid var(--border)}
+.modal-title{font-size:14px;font-weight:700;letter-spacing:-.02em}
 .modal-sub{font-size:11px;color:var(--text2);margin-top:2px}
-.modal-body{padding:14px 18px}
-.form-row{margin-bottom:12px}
-.form-label{font-size:11px;color:var(--text2);display:block;margin-bottom:4px}
-.form-input{width:100%;background:var(--surface2);border:0.5px solid var(--border-s);border-radius:5px;padding:7px 10px;font-size:12px;color:var(--text);font-family:inherit;outline:none}
-.form-input:focus{border-color:var(--accent);box-shadow:0 0 0 2px var(--accent-l)}
-.modal-foot{padding:10px 18px 14px;display:flex;gap:8px;justify-content:flex-end}
-.btn-cancel{font-size:12px;color:var(--text2);background:var(--surface2);border:0.5px solid var(--border-s);border-radius:5px;padding:6px 14px;cursor:pointer;font-family:inherit}
-.btn-save{font-size:12px;color:#fff;background:var(--accent);border:none;border-radius:5px;padding:6px 14px;cursor:pointer;font-family:inherit;font-weight:500}
-.btn-save:hover{background:#188a63}
+.modal-body{padding:15px 20px}
+.form-row{margin-bottom:13px}
+.form-label{font-size:11px;font-weight:500;color:var(--text2);display:block;margin-bottom:4px}
+.form-input{
+  width:100%;
+  background:var(--surface2);
+  border:1px solid var(--border-s);
+  border-radius:var(--radius-sm);
+  padding:8px 11px;
+  font-size:12px;color:var(--text);
+  font-family:'Inter',sans-serif;
+  outline:none;
+  transition:border-color .15s,box-shadow .15s;
+}
+.form-input:focus{border-color:var(--accent);box-shadow:0 0 0 3px var(--accent-mid)}
+.modal-foot{padding:11px 20px 16px;display:flex;gap:8px;justify-content:flex-end;border-top:1px solid var(--border)}
+.btn-cancel{
+  font-size:12px;font-weight:500;
+  color:var(--text2);
+  background:var(--surface2);
+  border:1px solid var(--border-s);
+  border-radius:var(--radius-sm);
+  padding:7px 16px;cursor:pointer;
+  font-family:'Inter',sans-serif;
+  transition:all .15s;
+}
+.btn-cancel:hover{background:var(--surface3);color:var(--text)}
+.btn-save{
+  font-size:12px;font-weight:600;
+  color:#fff;
+  background:linear-gradient(135deg,var(--accent),var(--accent-2));
+  border:none;
+  border-radius:var(--radius-sm);
+  padding:7px 16px;cursor:pointer;
+  font-family:'Inter',sans-serif;
+  box-shadow:0 2px 8px rgba(13,148,136,.3);
+  transition:all .15s;
+}
+.btn-save:hover{box-shadow:0 4px 14px rgba(13,148,136,.4);transform:translateY(-1px)}
 
-/* history list inside modal */
-.hist-list{max-height:180px;overflow-y:auto;margin-top:8px}
-.hist-item{display:flex;justify-content:space-between;align-items:center;padding:6px 0;border-bottom:0.5px solid var(--border)}
+/* history list */
+.hist-list{max-height:190px;overflow-y:auto;margin-top:8px}
+.hist-item{
+  display:flex;justify-content:space-between;align-items:center;
+  padding:7px 0;border-bottom:1px solid var(--border);
+}
 .hist-item:last-child{border-bottom:none}
-.hist-date{font-size:11px;font-weight:500}
+.hist-date{font-size:11px;font-weight:600;font-family:'JetBrains Mono',monospace}
 .hist-note{font-size:10px;color:var(--text2);margin-top:1px}
-.hist-del{font-size:10px;color:var(--text3);background:none;border:none;cursor:pointer;padding:2px 4px;font-family:inherit}
-.hist-del:hover{color:var(--c-new)}
-.hist-empty{font-size:11px;color:var(--text3);padding:12px 0;text-align:center}
+.hist-del{font-size:10px;color:var(--text3);background:none;border:none;cursor:pointer;padding:2px 5px;font-family:inherit;border-radius:3px}
+.hist-del:hover{color:var(--c-error);background:var(--cl-error)}
+.hist-empty{font-size:11px;color:var(--text3);padding:14px 0;text-align:center}
 
-/* day cells */
-.dcell{width:var(--day-w);height:var(--cell-h);border-right:0.5px solid var(--border);position:relative;vertical-align:middle;padding:0;cursor:default}
+/* ── DAY CELLS ── */
+.dcell{
+  width:var(--day-w);height:var(--cell-h);
+  border-right:1px solid var(--border);
+  position:relative;vertical-align:middle;
+  padding:0;cursor:default;
+  transition:background .1s;
+}
 .dcell.wk{background:var(--surface2)}
-.dcell.tcol{background:var(--accent-l)}
+.dcell.tcol{background:var(--accent-mid)}
 
-/* bars */
-.bar{position:absolute;top:50%;transform:translateY(-50%);height:16px;display:flex;align-items:center;overflow:hidden;z-index:2;font-size:8px;font-weight:500;white-space:nowrap;padding:0 4px;cursor:pointer;transition:filter .12s}
-.bar:hover{filter:brightness(.88)}
-.bar.bs{border-radius:4px 0 0 4px;left:3px;right:0}
-.bar.be{border-radius:0 4px 4px 0;left:0;right:3px}
-.bar.bso{border-radius:4px;left:3px;right:3px}
+/* ── RESERVATION BARS ── */
+.bar{
+  position:absolute;top:50%;transform:translateY(-50%);
+  height:17px;
+  display:flex;align-items:center;
+  overflow:hidden;z-index:2;
+  font-size:8px;font-weight:600;
+  white-space:nowrap;padding:0 5px;
+  cursor:pointer;
+  transition:filter .12s,transform .1s;
+  letter-spacing:.01em;
+}
+.bar:hover{filter:brightness(.9);transform:translateY(-50%) scaleY(1.08)}
+.bar.bs{border-radius:5px 0 0 5px;left:3px;right:0}
+.bar.be{border-radius:0 5px 5px 0;left:0;right:3px}
+.bar.bso{border-radius:5px;left:3px;right:3px}
 .bar.bm{left:0;right:0;border-radius:0}
-.bc{background:var(--cl-current);color:var(--c-current);border-left:2px solid var(--c-current)}
-.bn{background:var(--cl-new);color:var(--c-new);border-left:2px solid var(--c-new)}
-.bf{background:var(--cl-future);color:var(--c-future);border-left:2px solid var(--c-future)}
-.bs2{background:var(--cl-service);color:var(--c-service);border-left:2px solid var(--c-service)}
+.bc{background:var(--cl-current);color:var(--c-current);border-left:2.5px solid var(--c-current)}
+.bn{background:var(--cl-new);color:var(--c-new);border-left:2.5px solid var(--c-new)}
+.bf{background:var(--cl-future);color:var(--c-future);border-left:2.5px solid var(--c-future)}
+.bs2{background:var(--cl-service);color:var(--c-service);border-left:2.5px solid var(--c-service)}
 
-/* legend */
-.legend{display:flex;gap:16px;flex-wrap:wrap;margin-top:14px;padding-top:14px;border-top:0.5px solid var(--border)}
-.li{display:flex;align-items:center;gap:5px;font-size:11px;color:var(--text2)}
-.lsw{width:18px;height:5px;border-radius:2px}
+/* ── LEGEND ── */
+.legend{
+  display:flex;gap:18px;flex-wrap:wrap;
+  margin-top:16px;padding-top:16px;
+  border-top:1px solid var(--border);
+  align-items:center;
+}
+.li{display:flex;align-items:center;gap:6px;font-size:11px;color:var(--text2);font-weight:400}
+.lsw{width:18px;height:4px;border-radius:2px}
 
-/* tooltip */
-.tip{position:fixed;background:var(--text);color:var(--bg);font-size:11px;padding:8px 11px;border-radius:6px;pointer-events:none;z-index:9999;display:none;line-height:1.65;max-width:220px}
+/* ── TOOLTIP ── */
+.tip{
+  position:fixed;
+  background:var(--surface);
+  color:var(--text);
+  font-size:11px;
+  padding:10px 13px;
+  border-radius:var(--radius-sm);
+  pointer-events:none;z-index:9999;
+  display:none;
+  line-height:1.7;max-width:230px;
+  border:1px solid var(--border-s);
+  box-shadow:var(--shadow-lg);
+}
 
-/* empty */
-.empty{padding:48px;text-align:center;color:var(--text3)}
-.empty i{font-size:28px;margin-bottom:10px;display:block}
-.empty p{font-size:12px}
+/* ── EMPTY STATE ── */
+.empty{padding:56px;text-align:center;color:var(--text3)}
+.empty i{font-size:32px;margin-bottom:12px;display:block;color:var(--border-m)}
+.empty p{font-size:12px;line-height:1.6}
+
+/* ── TIRE BADGES ── */
+.tire-badge-row{display:flex;align-items:center;gap:3px;flex-wrap:wrap;margin-top:3px}
+.tire-mini{font-size:9px;font-weight:500;color:var(--c-booked);background:var(--cl-booked);
+  border-radius:3px;padding:1px 5px;display:inline-flex;align-items:center;gap:2px;
+  font-family:'JetBrains Mono',monospace}
+
+/* ── TIRES / ACCESSORIES MODAL ── */
+.tmodal-overlay{position:fixed;inset:0;background:rgba(0,0,0,0.55);backdrop-filter:blur(4px);
+  z-index:2000;display:flex;align-items:flex-start;justify-content:center;
+  padding:16px;overflow-y:auto}
+.tmodal{background:var(--surface);border:1px solid var(--border-s);border-radius:14px;
+  width:100%;max-width:660px;box-shadow:0 12px 40px rgba(0,0,0,.35);margin:auto}
+.tmodal-head{padding:16px 20px 12px;border-bottom:1px solid var(--border);
+  display:flex;align-items:center;justify-content:space-between}
+.tmodal-title{font-size:14px;font-weight:700;letter-spacing:-.02em}
+.tmodal-sub{font-size:11px;color:var(--text2);margin-top:2px}
+.tmodal-close{background:none;border:none;cursor:pointer;color:var(--text3);
+  font-size:16px;font-family:inherit;padding:2px 6px;border-radius:4px;transition:color .12s}
+.tmodal-close:hover{color:var(--text);background:var(--surface2)}
+.tmodal-tabs{display:flex;border-bottom:1px solid var(--border)}
+.tmodal-tab{flex:1;padding:10px 12px;font-size:11px;font-weight:600;background:none;border:none;
+  cursor:pointer;font-family:'Inter',sans-serif;color:var(--text2);
+  border-bottom:2px solid transparent;transition:all .15s;display:flex;align-items:center;
+  justify-content:center;gap:5px}
+.tmodal-tab.active{color:var(--accent);border-bottom-color:var(--accent)}
+.tmodal-body{padding:14px 16px 8px}
+.tmodal-foot{padding:10px 16px 14px;display:flex;gap:8px;justify-content:flex-end;
+  border-top:1px solid var(--border);margin-top:4px}
+
+/* tire cards grid */
+.tire-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:8px;margin-bottom:10px}
+.tire-card{background:var(--surface2);border:1px solid var(--border-s);border-radius:8px;padding:10px 12px}
+.tire-card-head{display:flex;align-items:center;gap:6px;margin-bottom:8px}
+.tire-pos-badge{font-size:10px;font-weight:600;background:var(--c-booked);color:#fff;
+  border-radius:4px;padding:2px 8px;white-space:nowrap}
+.tire-row{display:grid;grid-template-columns:1fr 1fr;gap:6px;margin-bottom:6px}
+.tire-row.three{grid-template-columns:1fr 1fr 1fr}
+.tire-field label{font-size:10px;font-weight:500;color:var(--text2);display:block;margin-bottom:3px}
+.tire-field input,.tire-field select{width:100%;background:var(--surface);border:1px solid var(--border-s);
+  border-radius:4px;padding:5px 7px;font-size:11px;color:var(--text);font-family:'Inter',sans-serif;outline:none;
+  transition:border-color .15s}
+.tire-field input:focus,.tire-field select:focus{border-color:var(--accent);box-shadow:0 0 0 2px var(--accent-mid)}
+.tire-remove{background:none;border:none;cursor:pointer;color:var(--text3);font-size:12px;
+  margin-left:auto;font-family:inherit;padding:2px 5px;border-radius:3px;transition:all .12s}
+.tire-remove:hover{color:var(--c-error);background:var(--cl-error)}
+.add-tire-btn{display:flex;align-items:center;gap:5px;font-size:11px;font-weight:500;
+  color:var(--accent);background:var(--accent-mid);border:1px dashed var(--accent);
+  border-radius:6px;padding:7px 14px;cursor:pointer;margin-bottom:8px;
+  font-family:'Inter',sans-serif;transition:all .12s}
+.add-tire-btn:hover{background:var(--accent-l)}
+
+/* accessories table */
+.acc-table{width:100%;border-collapse:collapse;font-size:11px;margin-bottom:8px}
+.acc-table th{font-size:10px;font-weight:600;color:var(--text2);text-transform:uppercase;
+  letter-spacing:.05em;border-bottom:1px solid var(--border-s);padding:5px 8px;text-align:left}
+.acc-table td{padding:4px 4px;border-bottom:1px solid var(--border)}
+.acc-table td input,.acc-table td select{width:100%;background:var(--surface2);
+  border:1px solid var(--border-s);border-radius:4px;padding:5px 7px;font-size:11px;
+  color:var(--text);font-family:'Inter',sans-serif;outline:none}
+.acc-table td input:focus,.acc-table td select:focus{border-color:var(--accent)}
+.acc-del{background:none;border:none;cursor:pointer;color:var(--text3);font-size:12px;
+  font-family:inherit;padding:2px 5px;border-radius:3px;transition:all .12s}
+.acc-del:hover{color:var(--c-error);background:var(--cl-error)}
+.add-acc-btn{font-size:11px;font-weight:500;color:var(--accent);background:var(--accent-mid);
+  border:1px dashed var(--accent);border-radius:5px;padding:5px 12px;cursor:pointer;
+  font-family:'Inter',sans-serif;transition:all .12s}
+.add-acc-btn:hover{background:var(--accent-l)}
+.no-data-row{font-size:11px;color:var(--text3);padding:10px 8px;text-align:center}
 </style>
 </head>
 <body>
 
 <div class="topbar">
   <div class="brand">
-    <div class="dot"></div>
-    Fleet Calendar<span class="sub">Retiro CERRITO CAR</span>
+    <div class="brand-logo"><i class="ti ti-car"></i></div>
+    <span class="brand-name">Fleet Calendar</span>
+    <div class="brand-sep"></div>
+    <span class="brand-sub">Retiro CERRITO CAR</span>
   </div>
   <div class="tr">
     <span class="datebadge" id="todayLbl"></span>
-    <label class="filebtn" for="fPque"><i class="ti ti-car" style="font-size:13px"></i> Parque</label>
-    <input type="file" id="fPque" accept=".txt">
-    <label class="filebtn" for="fRes"><i class="ti ti-calendar" style="font-size:13px"></i> Reservas</label>
-    <input type="file" id="fRes" accept=".txt">
-    <label class="filebtn" for="fTel"><i class="ti ti-map-pin" style="font-size:13px"></i> Telemática</label>
-    <input type="file" id="fTel" accept=".txt">
+    <div class="src-badge" onclick="openCfgModal()" title="Configurar ruta">
+      <span class="src-dot" id="dot-pque"></span>
+      <span id="lbl-pque">Parque</span>
+    </div>
+    <div class="src-badge" onclick="openCfgModal()" title="Configurar ruta">
+      <span class="src-dot" id="dot-res"></span>
+      <span id="lbl-res">Reservas</span>
+    </div>
+    <div class="src-badge" onclick="openCfgModal()" title="Configurar ruta">
+      <span class="src-dot" id="dot-tel"></span>
+      <span id="lbl-tel">Telemática</span>
+    </div>
+    <button class="filebtn" onclick="openCfgModal()" title="Configurar fuentes de datos">
+      <i class="ti ti-settings" style="font-size:13px"></i>
+    </button>
+    <input type="file" id="fPque" accept=".txt" style="display:none">
+    <input type="file" id="fRes"  accept=".txt" style="display:none">
+    <input type="file" id="fTel"  accept=".txt" style="display:none">
+    <button class="filebtn" id="btnTireOpen" onclick="openTireModal(null,null)" style="color:var(--accent);display:none">
+      <i class="ti ti-tire" style="font-size:13px"></i> Neumáticos
+    </button>
   </div>
 </div>
 
@@ -313,7 +789,10 @@ window.closeModal = function(e){
   document.getElementById('modalOverlay').style.display = 'none';
   modalPlate = null;
 };
-// also allow close button
+// show tire button in topbar after data loads
+document.getElementById('btnTireOpen').style.display='flex';
+
+// allow close button
 document.querySelectorAll && document.addEventListener('keydown', e=>{
   if(e.key==='Escape') document.getElementById('modalOverlay').style.display='none';
 });
@@ -420,6 +899,153 @@ hookFile('fPque','pque',parsePque);
 hookFile('fRes','res',parseRes);
 hookFile('fTel','tel',parseTel);
 
+
+// ── AUTOLOAD & CONFIG ────────────────────────────────────────────────────────
+const CFG_KEY = 'fleetcal_datasrc';
+const CFG_DEFAULTS = {
+  pque: './Pque.txt',
+  res:  './scraped_data.txt',
+  tel:  './TelemGts_data.txt',
+};
+
+function getCfg(){
+  try{ return Object.assign({}, CFG_DEFAULTS, JSON.parse(localStorage.getItem(CFG_KEY)||'{}')); }
+  catch(e){ return Object.assign({}, CFG_DEFAULTS); }
+}
+function setCfg(cfg){ try{ localStorage.setItem(CFG_KEY, JSON.stringify(cfg)); }catch(e){} }
+
+function setDotStatus(key, status, label){
+  ['dot-'+key, 'cdot-'+key].forEach(id=>{
+    const el=document.getElementById(id); if(el) el.className='src-dot '+(status||'');
+  });
+  const lbl=document.getElementById('lbl-'+key);
+  if(lbl && label) lbl.textContent=label;
+}
+
+async function fetchTxt(url){
+  const r=await fetch(url,{cache:'no-store'});
+  if(!r.ok) throw new Error(r.status+' '+r.statusText);
+  return r.text();
+}
+
+async function autoloadFiles(){
+  const cfg=getCfg();
+  const KEYS=[
+    {key:'pque',path:cfg.pque,parser:parsePque,label:'Parque'},
+    {key:'res', path:cfg.res, parser:parseRes, label:'Reservas'},
+    {key:'tel', path:cfg.tel, parser:parseTel, label:'Telemática'},
+  ];
+  setDotStatus('pque','loading');
+  setDotStatus('res','loading');
+  setDotStatus('tel','loading');
+  await Promise.all(KEYS.map(async ({key,path,parser,label})=>{
+    try{
+      const txt=await fetchTxt(path);
+      ST[key]=parser(txt);
+      setDotStatus(key,'ok',label+' ✓');
+    }catch(e){
+      setDotStatus(key,'err',label+' ✗');
+      console.warn('autoload:',key,path,e.message);
+    }
+  }));
+  tryRender();
+}
+
+window.openCfgModal=function(){
+  const cfg=getCfg();
+  document.getElementById('cfgPque').value=cfg.pque||CFG_DEFAULTS.pque;
+  document.getElementById('cfgRes').value =cfg.res ||CFG_DEFAULTS.res;
+  document.getElementById('cfgTel').value =cfg.tel ||CFG_DEFAULTS.tel;
+  ['pque','res','tel'].forEach(k=>{
+    const s=document.getElementById('dot-'+k);
+    const d=document.getElementById('cdot-'+k);
+    if(s&&d) d.className=s.className;
+    document.getElementById('cst-'+k).innerHTML='';
+  });
+  const ghp=document.getElementById('ghPresetPanel');
+  if(ghp) ghp.style.display='none';
+  document.getElementById('cfgOverlay').style.display='flex';
+};
+
+window.closeCfgModal=function(e){
+  if(e&&e.target!==document.getElementById('cfgOverlay')) return;
+  document.getElementById('cfgOverlay').style.display='none';
+};
+
+document.addEventListener('keydown',e=>{
+  if(e.key==='Escape'){
+    ['cfgOverlay','modalOverlay','tireModalOverlay'].forEach(id=>{
+      const el=document.getElementById(id); if(el) el.style.display='none';
+    });
+  }
+});
+
+window.testPath=async function(key){
+  const ids={pque:'cfgPque',res:'cfgRes',tel:'cfgTel'};
+  const path=document.getElementById(ids[key]).value.trim();
+  const stEl=document.getElementById('cst-'+key);
+  const dEl=document.getElementById('cdot-'+key);
+  if(!path){stEl.innerHTML='<span style="color:var(--text3)">Ingresá una ruta</span>'; return;}
+  stEl.innerHTML='<span style="color:#f59e0b">Probando…</span>';
+  dEl.className='src-dot loading';
+  try{
+    await fetchTxt(path);
+    stEl.innerHTML='<span style="color:#22c55e"><i class="ti ti-check" style="font-size:10px"></i> Accesible</span>';
+    dEl.className='src-dot ok';
+  }catch(e){
+    stEl.innerHTML='<span style="color:#ef4444"><i class="ti ti-x" style="font-size:10px"></i> '+e.message+'</span>';
+    dEl.className='src-dot err';
+  }
+};
+
+window.saveCfgAndReload=function(){
+  const cfg={
+    pque:document.getElementById('cfgPque').value.trim()||CFG_DEFAULTS.pque,
+    res: document.getElementById('cfgRes').value.trim() ||CFG_DEFAULTS.res,
+    tel: document.getElementById('cfgTel').value.trim() ||CFG_DEFAULTS.tel,
+  };
+  setCfg(cfg);
+  document.getElementById('cfgOverlay').style.display='none';
+  ST={pque:null,res:null,tel:null};
+  autoloadFiles();
+};
+
+window.applyGithubPreset=function(){
+  const p=document.getElementById('ghPresetPanel');
+  p.style.display=p.style.display==='none'?'block':'none';
+  if(p.style.display==='block') document.getElementById('ghBaseUrl').focus();
+};
+
+window.applyLocalPreset=function(){
+  document.getElementById('cfgPque').value=CFG_DEFAULTS.pque;
+  document.getElementById('cfgRes').value =CFG_DEFAULTS.res;
+  document.getElementById('cfgTel').value =CFG_DEFAULTS.tel;
+  const p=document.getElementById('ghPresetPanel');
+  if(p) p.style.display='none';
+  ['pque','res','tel'].forEach(k=>{
+    document.getElementById('cst-'+k).innerHTML=
+      '<span style="color:var(--text3);font-size:10px">Listo — Guardá para aplicar</span>';
+  });
+};
+
+window.applyGithubUrl=function(){
+  let base=document.getElementById('ghBaseUrl').value.trim();
+  if(!base){alert('Ingresá la URL base del repo'); return;}
+  if(!base.endsWith('/')) base+='/';
+  base=base
+    .replace('https://github.com/','https://raw.githubusercontent.com/')
+    .replace('/blob/','/').replace('/tree/','/');
+  document.getElementById('cfgPque').value=base+'Pque.txt';
+  document.getElementById('cfgRes').value =base+'scraped_data.txt';
+  document.getElementById('cfgTel').value =base+'TelemGts_data.txt';
+  const p=document.getElementById('ghPresetPanel');
+  if(p) p.style.display='none';
+  ['pque','res','tel'].forEach(k=>{
+    document.getElementById('cst-'+k).innerHTML=
+      '<span style="color:var(--text3);font-size:10px">Ruta GitHub aplicada — Guardá para activar</span>';
+  });
+};
+
 // ── EMBEDDED DATA ──
 (function(){
   ST.pque=parsePque(`18723 Toyota Corolla HV AT AI239SV	SEDAN	43
@@ -455,7 +1081,8 @@ hookFile('fTel','tel',parseTel);
     '12685\t-32.695877, -63.442169\t57,514\t38\tToyota Yaris HB AT AG708YJ\tBOOKED',
     '12877\t-34.597813, -58.380341\t32,284\t-\tToyota Corolla Cross HV AT AG765WS\tBOOKED'
   ].join('\n'));
-  tryRender();
+  // autoload from server/github overwrites embedded data if reachable
+  autoloadFiles();
 })();
 
 // ── NAV ──
@@ -465,6 +1092,245 @@ window.shiftMonth=function(d){
   renderCal();
 };
 window.goToday=function(){vYear=TODAY.getFullYear();vMonth=TODAY.getMonth();renderCal();};
+
+/* ── OPEN CHECKLIST ── */
+/* ── TIRES & ACCESSORIES STORAGE & UI ─────────────────────────────────────── */
+const TIRE_PREFIX = 'fleetcal_tires_';
+const ACC_PREFIX  = 'fleetcal_acc_';
+
+const TIRE_POSITIONS = [
+  'Delantera Izq','Delantera Der','Trasera Izq','Trasera Der',
+  'Trasera Int Izq','Trasera Int Der','Auxilio/Repuesto',
+  'Eje medio Izq','Eje medio Der'
+];
+const ACC_TYPES = [
+  'Matafuego','Balizas','Botiquín','Chaleco','Crique',
+  'Llave de rueda','Cable de arranque','Triángulo','Linterna','Otro'
+];
+
+let tireModalPlate = null;
+let tireModalModel = null;
+let tireTab = 'tires';
+let tireWorkingCopy = [];
+let accWorkingCopy  = [];
+
+function getTireData(plate){
+  try{ const r=localStorage.getItem(TIRE_PREFIX+plate); return r?JSON.parse(r):[]; }catch(e){ return []; }
+}
+function saveTireDataStore(plate,data){
+  try{ localStorage.setItem(TIRE_PREFIX+plate,JSON.stringify(data)); }catch(e){}
+}
+function getAccData(plate){
+  try{ const r=localStorage.getItem(ACC_PREFIX+plate); return r?JSON.parse(r):[]; }catch(e){ return []; }
+}
+function saveAccDataStore(plate,data){
+  try{ localStorage.setItem(ACC_PREFIX+plate,JSON.stringify(data)); }catch(e){}
+}
+function getTireNumbers(plate){
+  return getTireData(plate).filter(t=>t.numero).map(t=>t.numero);
+}
+
+/* ── MODAL OPEN / CLOSE ── */
+window.openTireModal = function(plate, modelName){
+  tireModalPlate = plate;
+  tireModalModel = modelName;
+  if(!plate){
+    buildVehiclePicker(); return;
+  }
+  document.getElementById('tireModalTitle').textContent = 'Neumáticos · ' + plate;
+  document.getElementById('tireModalSub').textContent   = modelName || '';
+  switchTireTab('tires');
+  renderTireCards(plate);
+  renderAccRows(plate);
+  document.getElementById('tireModalOverlay').style.display='flex';
+};
+
+function buildVehiclePicker(){
+  if(!ST.pque||!ST.pque.length){ alert('Cargá primero el archivo Parque.txt'); return; }
+  document.getElementById('tireModalTitle').textContent = 'Seleccionar vehículo';
+  document.getElementById('tireModalSub').textContent   = 'Elegí un vehículo para gestionar neumáticos y accesorios';
+  const panel = document.getElementById('panelTires');
+  panel.innerHTML = '<div style="display:flex;flex-direction:column;gap:6px;padding-bottom:8px">' +
+    ST.pque.map(v=>`<button onclick="selectVehicleForTires('${v.plate}','${v.model.replace(/'/g,"\'")}','${v.bodyType||''}')"
+      style="text-align:left;background:var(--surface2);border:1px solid var(--border-s);border-radius:7px;
+      padding:9px 13px;cursor:pointer;font-family:'Inter',sans-serif;font-size:12px;color:var(--text);transition:background .12s"
+      onmouseover="this.style.background='var(--surface3)'" onmouseout="this.style.background='var(--surface2)'">
+      <span style="font-family:'JetBrains Mono',monospace;font-weight:600;color:var(--c-booked)">${v.plate}</span>
+      <span style="color:var(--text2);margin-left:8px">${v.model}</span>
+    </button>`).join('') +
+  '</div>';
+  document.getElementById('tabTires').classList.add('active');
+  document.getElementById('tabAcc').classList.remove('active');
+  document.getElementById('panelAcc').style.display='none';
+  document.getElementById('tireModalOverlay').style.display='flex';
+}
+
+window.selectVehicleForTires = function(plate, model){
+  tireModalPlate = plate;
+  tireModalModel = model;
+  document.getElementById('tireModalTitle').textContent = 'Neumáticos · ' + plate;
+  document.getElementById('tireModalSub').textContent   = model;
+  switchTireTab('tires');
+  renderTireCards(plate);
+  renderAccRows(plate);
+};
+
+window.closeTireModal = function(e){
+  if(e && e.target!==document.getElementById('tireModalOverlay')) return;
+  document.getElementById('tireModalOverlay').style.display='none';
+};
+
+/* ── TABS ── */
+window.switchTireTab = function(tab){
+  tireTab = tab;
+  document.getElementById('tabTires').classList.toggle('active', tab==='tires');
+  document.getElementById('tabAcc').classList.toggle('active',   tab==='acc');
+  document.getElementById('panelTires').style.display = tab==='tires'?'block':'none';
+  document.getElementById('panelAcc').style.display   = tab==='acc'  ?'block':'none';
+};
+
+/* ── TIRE CARDS ── */
+function renderTireCards(plate){
+  tireWorkingCopy = JSON.parse(JSON.stringify(getTireData(plate)));
+  rebuildTireCards();
+}
+
+function rebuildTireCards(){
+  const container = document.getElementById('tireCards');
+  if(!tireWorkingCopy.length){
+    container.innerHTML='<p style="font-size:11px;color:var(--text3);margin-bottom:10px;padding:4px 0">Sin neumáticos registrados para este vehículo.</p>';
+    return;
+  }
+  container.innerHTML = tireWorkingCopy.map((t,i)=>buildTireCardHTML(t,i)).join('');
+}
+
+function buildTireCardHTML(t,i){
+  const posOpts = TIRE_POSITIONS.map(p=>`<option value="${p}" ${t.posicion===p?'selected':''}>${p}</option>`).join('');
+  return `<div class="tire-card" id="tc-${i}">
+    <div class="tire-card-head">
+      <span class="tire-pos-badge"><i class="ti ti-tire" style="font-size:10px"></i> ${t.posicion||'Sin posición'}</span>
+      <button class="tire-remove" onclick="removeTireCard(${i})" title="Eliminar">
+        <i class="ti ti-trash" style="font-size:11px"></i>
+      </button>
+    </div>
+    <div class="tire-row">
+      <div class="tire-field"><label>Posición</label>
+        <select onchange="updateTireField(${i},'posicion',this.value)">${posOpts}</select></div>
+      <div class="tire-field"><label>Número / ID</label>
+        <input type="text" placeholder="ej: TI-001" value="${t.numero||''}"
+          onchange="updateTireField(${i},'numero',this.value)"></div>
+    </div>
+    <div class="tire-row three">
+      <div class="tire-field"><label>Marca</label>
+        <input type="text" placeholder="Michelin…" value="${t.marca||''}"
+          onchange="updateTireField(${i},'marca',this.value)"></div>
+      <div class="tire-field"><label>Rodado</label>
+        <input type="text" placeholder="205/55R16" value="${t.rodado||''}"
+          onchange="updateTireField(${i},'rodado',this.value)"></div>
+      <div class="tire-field"><label>DOT</label>
+        <input type="text" placeholder="2823" value="${t.dot||''}"
+          onchange="updateTireField(${i},'dot',this.value)"></div>
+    </div>
+    <div class="tire-row">
+      <div class="tire-field"><label>Fecha montaje</label>
+        <input type="date" value="${t.fecha||''}"
+          onchange="updateTireField(${i},'fecha',this.value)"></div>
+      <div class="tire-field"><label>Km al montar</label>
+        <input type="text" placeholder="70.000" value="${t.km||''}"
+          onchange="updateTireField(${i},'km',this.value)"></div>
+    </div>
+  </div>`;
+}
+
+window.updateTireField = function(i, field, val){
+  if(!tireWorkingCopy[i]) return;
+  tireWorkingCopy[i][field] = val;
+  if(field==='posicion'){
+    const badge = document.querySelector('#tc-'+i+' .tire-pos-badge');
+    if(badge) badge.innerHTML = '<i class="ti ti-tire" style="font-size:10px"></i> ' + val;
+  }
+};
+
+window.addTireCard = function(){
+  tireWorkingCopy.push({posicion:'',numero:'',marca:'',rodado:'',dot:'',fecha:'',km:''});
+  rebuildTireCards();
+  // scroll to bottom of panel
+  const p = document.getElementById('panelTires');
+  setTimeout(()=>{ p.scrollTop = p.scrollHeight; }, 50);
+};
+
+window.removeTireCard = function(i){
+  tireWorkingCopy.splice(i,1);
+  rebuildTireCards();
+};
+
+/* ── ACCESSORIES ── */
+function renderAccRows(plate){
+  accWorkingCopy = JSON.parse(JSON.stringify(getAccData(plate)));
+  rebuildAccTable();
+}
+
+function rebuildAccTable(){
+  const tbody = document.getElementById('accRows');
+  if(!accWorkingCopy.length){
+    tbody.innerHTML='<tr><td colspan="3" class="no-data-row">Sin accesorios registrados.</td></tr>';
+    return;
+  }
+  tbody.innerHTML = accWorkingCopy.map((a,i)=>{
+    const typeOpts = ACC_TYPES.map(t=>`<option value="${t}" ${a.tipo===t?'selected':''}>${t}</option>`).join('');
+    return `<tr>
+      <td><select onchange="updateAccField(${i},'tipo',this.value)">
+        <option value="">— Tipo —</option>${typeOpts}
+      </select></td>
+      <td><input type="text" placeholder="Número o descripción" value="${a.numero||''}"
+        onchange="updateAccField(${i},'numero',this.value)"></td>
+      <td><button class="acc-del" onclick="removeAccRow(${i})" title="Eliminar">
+        <i class="ti ti-x"></i></button></td>
+    </tr>`;
+  }).join('');
+}
+
+window.updateAccField = function(i,field,val){ if(accWorkingCopy[i]) accWorkingCopy[i][field]=val; };
+window.addAccRow = function(){
+  accWorkingCopy.push({tipo:'',numero:''});
+  rebuildAccTable();
+};
+window.removeAccRow = function(i){ accWorkingCopy.splice(i,1); rebuildAccTable(); };
+
+/* ── SAVE ── */
+window.saveTireData = function(){
+  if(!tireModalPlate){ alert('No hay vehículo seleccionado'); return; }
+  saveTireDataStore(tireModalPlate, tireWorkingCopy);
+  saveAccDataStore(tireModalPlate, accWorkingCopy);
+  document.getElementById('tireModalOverlay').style.display='none';
+  renderCal(); // refresh to update tire badges in calendar
+};
+
+window.openChecklist = function(el) {
+  try {
+    var d = JSON.parse(el.dataset.checklist.replace(/&quot;/g, '"'));
+    // find vehicle info from pque
+    var veh = ST.pque ? ST.pque.find(function(v){ return v.plate === d.plate; }) : null;
+    var tel = ST.tel ? ST.tel[d.plate] : null;
+    var payload = {
+      plate:      d.plate,
+      resid:      d.code,
+      renter:     d.renter,
+      startDate:  d.start,
+      startTime:  d.startTime,
+      endDate:    d.end,
+      endTime:    d.endTime,
+      km:         tel ? tel.km : '—',
+      tankCap:    veh ? veh.tankCap : 0,
+      bodyType:   veh ? veh.bodyType : 'HATCHBACK',
+      tires:      getTireData(d.plate),
+      tireNums:   getTireNumbers(d.plate),
+      accesorios: getAccData(d.plate),
+    };
+    localStorage.setItem('fleetcal_checklist_data', JSON.stringify(payload));
+    window.open('checklist_kinto.html', '_blank');
+  } catch(e) { console.error('openChecklist error:', e); }
+};
 
 function tryRender(){
   if(!ST.pque||!ST.res||!ST.tel) return;
@@ -584,6 +1450,7 @@ function renderCal(){
         </span>
       </span>`:''}
       ${needsTransfer?`<span class="transfer-detail"><i class="ti ti-user" style="font-size:9px"></i> ${transferRes.renter}</span>`:''}
+      ${(()=>{const td=getTireData(veh.plate);if(!td.length)return'';return`<span class="tire-badge-row">${td.slice(0,4).map(t=>`<span class="tire-mini"><i class="ti ti-tire" style="font-size:8px"></i>${t.numero||t.posicion||'—'}</span>`).join('')}${td.length>4?`<span class="tire-mini">+${td.length-4}</span>`:''}</span>`;})()}
     </td>`;
 
     // ── MAINTENANCE CELL ──
@@ -635,7 +1502,7 @@ function renderCal(){
           endTime:res.end?res.end.toLocaleTimeString('es-AR',{hour:'2-digit',minute:'2-digit',hour12:false}):'',
           status:res.status,plate:res.plate
         }).replace(/"/g,'&quot;');
-        html+=`<div class="bar ${btype} ${bc}" data-tip="${tipData}">${label}</div>`;
+        html+=`<div class="bar ${btype} ${bc}" data-tip="${tipData}" data-checklist="${tipData}" onclick="openChecklist(this)">${label}</div>`;
       });
       html+=`</td>`;
     }
@@ -662,7 +1529,7 @@ function renderCal(){
   document.querySelectorAll('.bar[data-tip]').forEach(el=>{
     el.addEventListener('mouseenter',e=>{
       const d=JSON.parse(el.dataset.tip.replace(/&quot;/g,'"'));
-      tip.innerHTML=`<strong>${d.plate}</strong><br>${d.renter}<br><span style="opacity:.85"><i>Retiro:</i> ${d.start} ${d.startTime}</span><br><span style="opacity:.85"><i>Entrega:</i> ${d.end} ${d.endTime}</span><br><span style="opacity:.6">${d.status} · #${d.code}</span>`;
+      tip.innerHTML=`<span style="font-family:'JetBrains Mono',monospace;font-size:10px;font-weight:600;color:var(--c-booked)">${d.plate}</span><br><span style="font-weight:600">${d.renter}</span><br><span style="color:var(--text2);font-size:10px"><i class="ti ti-login" style="font-size:9px"></i> ${d.start} ${d.startTime}</span><br><span style="color:var(--text2);font-size:10px"><i class="ti ti-logout" style="font-size:9px"></i> ${d.end} ${d.endTime}</span><br><span style="font-size:9px;color:var(--text3);margin-top:2px;display:block">${d.status} · #${d.code}</span>`;
       tip.style.display='block'; moveTip(e);
     });
     el.addEventListener('mousemove',moveTip);
@@ -675,5 +1542,127 @@ function renderCal(){
   }
 }
 </script>
+
+<!-- ── CONFIG MODAL ── -->
+<div class="cfg-overlay" id="cfgOverlay" style="display:none" onclick="closeCfgModal(event)">
+  <div class="cfg-modal" onclick="event.stopPropagation()">
+    <div class="cfg-head">
+      <div>
+        <div class="cfg-title"><i class="ti ti-settings" style="font-size:13px;margin-right:5px"></i>Fuentes de datos</div>
+        <div class="cfg-sub">Rutas relativas al servidor. Los archivos se cargan automáticamente al abrir la página.</div>
+      </div>
+      <button class="cfg-close" onclick="closeCfgModal()"><i class="ti ti-x"></i></button>
+    </div>
+    <div class="cfg-body">
+      <div class="cfg-section-title">Rutas de archivos .txt en el servidor</div>
+      <div class="cfg-row">
+        <label class="cfg-label"><span class="src-dot" id="cdot-pque"></span> Parque</label>
+        <div class="cfg-input-wrap">
+          <input class="cfg-input" id="cfgPque" placeholder="./Pque.txt" spellcheck="false">
+          <button class="cfg-test-btn" onclick="testPath('pque')"><i class="ti ti-plug" style="font-size:11px"></i> Probar</button>
+        </div>
+        <div class="cfg-status" id="cst-pque"></div>
+      </div>
+      <div class="cfg-row">
+        <label class="cfg-label"><span class="src-dot" id="cdot-res"></span> Reservas</label>
+        <div class="cfg-input-wrap">
+          <input class="cfg-input" id="cfgRes" placeholder="./scraped_data.txt" spellcheck="false">
+          <button class="cfg-test-btn" onclick="testPath('res')"><i class="ti ti-plug" style="font-size:11px"></i> Probar</button>
+        </div>
+        <div class="cfg-status" id="cst-res"></div>
+      </div>
+      <div class="cfg-row">
+        <label class="cfg-label"><span class="src-dot" id="cdot-tel"></span> Telemática</label>
+        <div class="cfg-input-wrap">
+          <input class="cfg-input" id="cfgTel" placeholder="./TelemGts_data.txt" spellcheck="false">
+          <button class="cfg-test-btn" onclick="testPath('tel')"><i class="ti ti-plug" style="font-size:11px"></i> Probar</button>
+        </div>
+        <div class="cfg-status" id="cst-tel"></div>
+      </div>
+      <hr class="cfg-divider">
+      <div class="cfg-section-title">Fuente rápida</div>
+      <div style="display:flex;gap:6px;flex-wrap:wrap;margin-bottom:8px">
+        <button class="cfg-test-btn" onclick="applyGithubPreset()" style="display:flex;align-items:center;gap:5px">
+          <svg width="13" height="13" viewBox="0 0 16 16" fill="currentColor"><path d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38 0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82.64-.18 1.32-.27 2-.27.68 0 1.36.09 2 .27 1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A8.013 8.013 0 0016 8c0-4.42-3.58-8-8-8z"/></svg>
+          GitHub
+        </button>
+        <button class="cfg-test-btn" onclick="applyLocalPreset()" style="display:flex;align-items:center;gap:5px">
+          <i class="ti ti-server" style="font-size:11px"></i> Servidor local
+        </button>
+      </div>
+      <div id="ghPresetPanel" style="display:none;margin-bottom:10px;background:var(--surface2);border:0.5px solid var(--border-s);border-radius:6px;padding:10px 12px">
+        <div style="font-size:10px;color:var(--text2);margin-bottom:6px">
+          Pegá la URL de la carpeta de tu repo en GitHub (rama + carpeta opcional):
+        </div>
+        <code style="font-size:9px;color:var(--text3);display:block;margin-bottom:6px">https://github.com/usuario/repo/tree/main/datos/</code>
+        <div class="cfg-input-wrap" style="margin-bottom:6px">
+          <input class="cfg-input" id="ghBaseUrl" placeholder="https://github.com/usuario/repo/tree/main/" spellcheck="false" style="font-size:11px">
+        </div>
+        <div style="font-size:10px;color:var(--text3);margin-bottom:8px">
+          Los archivos deben llamarse exactamente <strong>Pque.txt</strong>, <strong>scraped_data.txt</strong> y <strong>TelemGts_data.txt</strong>
+        </div>
+        <button class="btn-save" style="font-size:11px;padding:5px 14px" onclick="applyGithubUrl()">
+          <i class="ti ti-arrow-right" style="font-size:11px"></i> Aplicar rutas
+        </button>
+      </div>
+      <hr class="cfg-divider">
+      <div class="cfg-section-title">Carga manual (alternativa)</div>
+      <div style="display:flex;gap:8px;flex-wrap:wrap">
+        <label class="filebtn" for="fPque" style="font-size:11px"><i class="ti ti-upload" style="font-size:12px"></i> Parque</label>
+        <label class="filebtn" for="fRes"  style="font-size:11px"><i class="ti ti-upload" style="font-size:12px"></i> Reservas</label>
+        <label class="filebtn" for="fTel"  style="font-size:11px"><i class="ti ti-upload" style="font-size:12px"></i> Telemática</label>
+      </div>
+    </div>
+    <div class="cfg-foot">
+      <span class="cfg-reload-note"><i class="ti ti-refresh" style="font-size:11px"></i> Auto-recarga cada vez que abrís la página</span>
+      <div style="display:flex;gap:8px">
+        <button class="btn-cancel" onclick="closeCfgModal()">Cancelar</button>
+        <button class="btn-save" onclick="saveCfgAndReload()"><i class="ti ti-device-floppy" style="font-size:12px"></i> Guardar y recargar</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ── TIRES / ACCESSORIES MODAL ── -->
+<div class="tmodal-overlay" id="tireModalOverlay" style="display:none" onclick="closeTireModal(event)">
+  <div class="tmodal" onclick="event.stopPropagation()">
+    <div class="tmodal-head">
+      <div>
+        <div class="tmodal-title" id="tireModalTitle">Neumáticos y Accesorios</div>
+        <div class="tmodal-sub" id="tireModalSub"></div>
+      </div>
+      <button class="tmodal-close" onclick="closeTireModal()" aria-label="cerrar"><i class="ti ti-x"></i></button>
+    </div>
+    <div class="tmodal-tabs">
+      <button class="tmodal-tab active" id="tabTires" onclick="switchTireTab('tires')">
+        <i class="ti ti-tire" style="font-size:12px"></i> Neumáticos
+      </button>
+      <button class="tmodal-tab" id="tabAcc" onclick="switchTireTab('acc')">
+        <i class="ti ti-tool" style="font-size:12px"></i> Accesorios
+      </button>
+    </div>
+    <div id="panelTires" class="tmodal-body">
+      <div id="tireCards"></div>
+      <button class="add-tire-btn" onclick="addTireCard()">
+        <i class="ti ti-plus" style="font-size:11px"></i> Agregar neumático
+      </button>
+    </div>
+    <div id="panelAcc" class="tmodal-body" style="display:none">
+      <table class="acc-table">
+        <thead><tr><th>Tipo</th><th>Número / Descripción</th><th></th></tr></thead>
+        <tbody id="accRows"></tbody>
+      </table>
+      <button class="add-acc-btn" onclick="addAccRow()">
+        <i class="ti ti-plus" style="font-size:10px"></i> Agregar accesorio
+      </button>
+    </div>
+    <div class="tmodal-foot">
+      <button class="btn-cancel" onclick="closeTireModal()">Cancelar</button>
+      <button class="btn-save" onclick="saveTireData()">
+        <i class="ti ti-device-floppy" style="font-size:12px"></i> Guardar
+      </button>
+    </div>
+  </div>
+</div>
 </body>
 </html>
