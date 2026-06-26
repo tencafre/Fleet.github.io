@@ -8,6 +8,7 @@ k96j256	juan ramiro bartolome	Toyota Yaris HB AT AG708YK	Retiro CERRITO CAR	--	4
 l8mo05j	Nicolás Miremont	Toyota ETIOS HB A/T AG350QF	Retiro CERRITO CAR	--	5:00 PM  Jun 24, 2026	8:00 AM  Jun 26, 2026	Current
 yqogr3x	Ezequiel Lipovetzky	Toyota ETIOS HB A/T AG350QF	Retiro CERRITO CAR	--	1:00 PM  Jun 26, 2026	1:00 PM  Jun 29, 2026	New
 yornq9x	Roberto Silvio Giuliani	Toyota Hilux 4x4 DC AT AG838JY	Retiro CERRITO CAR	--	2:00 PM  Jun 26, 2026	11:00 AM  Jun 27, 2026	New
+ldvqedn	Benjamin Blanco Pinto	Toyota Etios SD AT AG350QD	Retiro CERRITO CAR	--	5:00 PM  Jun 26, 2026	10:00 AM  Jun 29, 2026	New
 ldvq73e	Edgardo Javier Lopez	Toyota Etios SD AT AG350QD	Retiro CERRITO CAR	--	2:00 PM  Jul 8, 2026	2:00 PM  Jul 13, 2026	New
 kgdxj1q	Viviana Duffau	Toyota Hilux 4x4 DC AT AG838JY	Retiro CERRITO CAR	--	2:00 PM  Jul 13, 2026	2:00 PM  Jul 20, 2026	New
 y7dozog	Marcos Dormal	Toyota SW4 4x4 7A AT AG269JN	Retiro CERRITO CAR	--	6:00 PM  Jul 17, 2026	9:00 AM  Jul 27, 2026	New
