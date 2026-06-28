@@ -2,6 +2,7 @@
 <html lang="es">
 <head>
 <meta charset="UTF-8">
+<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'unsafe-inline' https://cdnjs.cloudflare.com; style-src 'self' 'unsafe-inline' https://cdn.jsdelivr.net https://cdnjs.cloudflare.com https://fonts.googleapis.com; font-src https://fonts.gstatic.com https://cdn.jsdelivr.net https://cdnjs.cloudflare.com; img-src 'self' data: blob:; connect-src 'self' https://raw.githubusercontent.com https://api.github.com;">
 <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
 <meta name="mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-capable" content="yes">
@@ -15,383 +16,605 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
 <style>
-/* ── TOKENS ── */
+/* ═══════════════════════════════════════════════════
+   Fleet Mobile — Fine Design System
+   Inspired by: Linear, Vercel, Raycast dark aesthetics
+   Typography: Inter (UI) + JetBrains Mono (data/codes)
+═══════════════════════════════════════════════════ */
+
 :root{
-  --bg:#121212;--s1:#1e1e1e;--s2:#2a2a2a;--s3:#333;
-  --b:rgba(255,255,255,.07);--bs:rgba(255,255,255,.14);
-  --t:#e8eaf0;--t2:#aaa;--t3:#666;
-  --acc:#00BFA5;--acc2:#00897B;--accl:rgba(0,191,165,.12);
-  --c-ok:#69F0AE;   --cl-ok:rgba(105,240,174,.13);
-  --c-new:#FFD740;  --cl-new:rgba(255,215,64,.12);
-  --c-fut:#82B1FF;  --cl-fut:rgba(130,177,255,.12);
-  --c-svc:#FFD740;  --cl-svc:rgba(255,215,64,.12);
-  --c-err:#FF5252;  --cl-err:rgba(255,82,82,.13);
-  --c-blu:#82B1FF;  --cl-blu:rgba(130,177,255,.12);
-  --nav:56px;--tab:58px;
-  --safe-b:env(safe-area-inset-bottom,0px);
-  --r:12px;--rs:8px;
+  /* Surfaces — layered depth */
+  --bg:     #0a0a0b;
+  --s0:     #0f0f11;
+  --s1:     #161618;
+  --s2:     #1c1c1f;
+  --s3:     #242428;
+  --s4:     #2e2e33;
+
+  /* Borders — ultra-subtle */
+  --b:      rgba(255,255,255,.055);
+  --bs:     rgba(255,255,255,.10);
+  --bm:     rgba(255,255,255,.16);
+
+  /* Text hierarchy */
+  --t:      #f0f0f2;
+  --t2:     #8b8b96;
+  --t3:     #52525a;
+  --t-inv:  #0a0a0b;
+
+  /* Brand — teal with warm tint */
+  --acc:    #2dd4bf;
+  --acc2:   #0d9488;
+  --accl:   rgba(45,212,191,.10);
+  --acc-glow: 0 0 20px rgba(45,212,191,.18);
+
+  /* Semantic status — muted, desaturated for dark */
+  --c-ok:   #34d399;  --cl-ok:  rgba(52,211,153,.10);
+  --c-new:  #f59e0b;  --cl-new: rgba(245,158,11,.10);
+  --c-fut:  #818cf8;  --cl-fut: rgba(129,140,248,.10);
+  --c-svc:  --c-new;  --cl-svc: rgba(245,158,11,.10);
+  --c-err:  #f87171;  --cl-err: rgba(248,113,113,.10);
+  --c-blu:  #60a5fa;  --cl-blu: rgba(96,165,250,.10);
+  --nav: 52px;
+  --tab: 56px;
+  --safe-b: env(safe-area-inset-bottom, 0px);
+  --r:  10px;
+  --rs: 6px;
+  --rl: 14px;
 }
 *,*::before,*::after{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent}
 html{font-size:15px;-webkit-text-size-adjust:100%}
 body{
-  font-family:'Inter',Roboto,sans-serif;
+  font-family:'Inter',system-ui,-apple-system,sans-serif;
   background:var(--bg);
   color:var(--t);
   min-height:100dvh;
   overflow-x:hidden;
   -webkit-font-smoothing:antialiased;
+  -moz-osx-font-smoothing:grayscale;
 }
-.mono{font-family:'JetBrains Mono',monospace}
+.mono{font-family:'JetBrains Mono',ui-monospace,monospace;letter-spacing:.01em}
 
-/* ── TOP APP BAR (Material) ── */
+/* ══════════════════════════════════════════════════
+   TOP APP BAR — frosted glass, ultra-thin
+══════════════════════════════════════════════════ */
 .top-app-bar{
   position:fixed;top:0;left:0;right:0;z-index:90;
   height:var(--nav);
-  background:#1B5E20;
+  background:rgba(10,10,11,.88);
+  backdrop-filter:blur(24px) saturate(180%);
+  -webkit-backdrop-filter:blur(24px) saturate(180%);
+  border-bottom:1px solid var(--b);
   display:flex;align-items:center;
-  padding:0 8px 0 16px;
-  gap:8px;
-  box-shadow:0 2px 8px rgba(0,0,0,.4);
+  padding:0 6px 0 14px;gap:8px;
 }
-.top-app-bar .brand{flex:1;min-width:0}
-.top-app-bar .brand-title{
-  font-size:18px;font-weight:700;letter-spacing:.01em;color:#fff;line-height:1;
+.brand{flex:1;min-width:0}
+.brand-title{
+  font-size:14px;font-weight:700;letter-spacing:-.025em;
+  color:var(--t);line-height:1;
 }
-.top-app-bar .brand-sub{font-size:10px;color:rgba(255,255,255,.6);margin-top:1px}
-.top-app-bar .topbar-date{
-  font-size:10px;color:rgba(255,255,255,.55);
+.brand-sub{font-size:10px;color:var(--t3);margin-top:1px;letter-spacing:.01em}
+.topbar-date{
+  font-size:10px;color:var(--t3);
   font-family:'JetBrains Mono',monospace;white-space:nowrap;
 }
 .icon-btn{
-  width:40px;height:40px;border-radius:50%;border:none;
-  background:rgba(255,255,255,.1);color:#fff;
+  width:34px;height:34px;border-radius:8px;border:none;
+  background:var(--s2);color:var(--t2);
   display:flex;align-items:center;justify-content:center;
-  cursor:pointer;transition:background .15s;flex-shrink:0;
+  cursor:pointer;transition:all .15s;flex-shrink:0;border:1px solid var(--b);
 }
-.icon-btn:active{background:rgba(255,255,255,.2)}
-.icon-btn .material-icons{font-size:20px}
-.src-dots{display:flex;gap:4px;align-items:center}
-.src-dot{width:6px;height:6px;border-radius:50%;background:var(--t3);transition:background .3s}
-.src-dot.ok{background:#69F0AE;box-shadow:0 0 5px rgba(105,240,174,.6)}
-.src-dot.err{background:#FF5252}
-.src-dot.loading{background:#FFD740;animation:blink .8s ease-in-out infinite}
-@keyframes blink{0%,100%{opacity:1}50%{opacity:.25}}
+.icon-btn:active{background:var(--s3);transform:scale(.92)}
+.icon-btn .material-icons{font-size:18px}
+.src-dots{display:flex;gap:5px;align-items:center}
+.src-dot{
+  width:5px;height:5px;border-radius:50%;
+  background:var(--t3);transition:all .3s;
+}
+.src-dot.ok{background:var(--c-ok);box-shadow:0 0 6px rgba(52,211,153,.45)}
+.src-dot.err{background:var(--c-err)}
+.src-dot.loading{background:var(--c-new);animation:blink .9s ease-in-out infinite}
+@keyframes blink{0%,100%{opacity:1;transform:scale(1)}50%{opacity:.3;transform:scale(.6)}}
 
-/* ── KPI STRIP ── */
+/* ══════════════════════════════════════════════════
+   KPI STRIP — glass morphism, minimal
+══════════════════════════════════════════════════ */
 .kpi-strip{
   position:fixed;top:var(--nav);left:0;right:0;z-index:89;
   display:grid;grid-template-columns:repeat(4,1fr);
-  background:#1B5E20;
-  border-bottom:1px solid rgba(0,0,0,.3);
+  gap:1px;background:var(--b);
+  border-bottom:1px solid var(--b);
 }
-.kpi-cell{padding:6px 8px 8px;text-align:center}
-.kpi-n{font-size:20px;font-weight:700;letter-spacing:-.03em;color:#fff;line-height:1}
-.kpi-l{font-size:8px;text-transform:uppercase;letter-spacing:.08em;color:rgba(255,255,255,.55);margin-top:2px}
-.kpi-cell:nth-child(4) .kpi-n{color:#FFD740}
+.kpi-cell{
+  background:var(--s0);
+  padding:7px 8px 8px;text-align:center;
+  position:relative;overflow:hidden;
+}
+.kpi-cell::before{
+  content:'';position:absolute;inset:0;
+  background:linear-gradient(135deg,rgba(45,212,191,.03) 0%,transparent 60%);
+  pointer-events:none;
+}
+.kpi-n{
+  font-size:20px;font-weight:700;
+  letter-spacing:-.04em;color:var(--t);line-height:1;
+  font-family:'Inter',sans-serif;
+}
+.kpi-l{
+  font-size:8px;text-transform:uppercase;letter-spacing:.09em;
+  color:var(--t3);margin-top:3px;font-weight:600;
+}
 
-/* ── VIEW TABS (Material style) ── */
+/* ══════════════════════════════════════════════════
+   VIEW TABS — pill-style, refined
+══════════════════════════════════════════════════ */
 .view-tabs{
-  position:fixed;top:calc(var(--nav) + 40px);left:0;right:0;z-index:88;
-  display:flex;
-  background:#2E7D32;
-  border-bottom:2px solid rgba(0,0,0,.2);
+  position:fixed;
+  top:calc(var(--nav) + 38px);
+  left:0;right:0;z-index:88;
+  display:flex;gap:0;
+  background:var(--s0);
+  border-bottom:1px solid var(--b);
+  padding:0 4px;
 }
 .vtab{
-  flex:1;padding:0 4px 8px;padding-top:8px;
-  font-size:10px;font-weight:700;
-  color:rgba(255,255,255,.55);
+  flex:1;
+  padding:8px 4px 9px;
+  font-size:9px;font-weight:700;
+  color:var(--t3);
   border:none;background:none;cursor:pointer;
-  border-bottom:2.5px solid transparent;
-  transition:all .2s;letter-spacing:.03em;
+  border-bottom:2px solid transparent;
+  transition:all .18s;letter-spacing:.05em;
   text-transform:uppercase;
-  display:flex;flex-direction:column;align-items:center;gap:2px;
+  display:flex;flex-direction:column;align-items:center;gap:3px;
 }
-.vtab .material-icons{font-size:18px}
-.vtab.active{color:#fff;border-bottom-color:#69F0AE}
+.vtab .material-icons{font-size:17px;transition:color .18s}
+.vtab.active{color:var(--acc)}
+.vtab.active .material-icons{color:var(--acc)}
+.vtab.active{border-bottom-color:var(--acc)}
 
-/* ── SCROLL AREA ── */
+/* ══════════════════════════════════════════════════
+   SCROLL AREA
+══════════════════════════════════════════════════ */
 .scroll-area{
-  padding-top:calc(var(--nav) + 40px + 40px + 4px);
-  padding-bottom:calc(var(--tab) + var(--safe-b) + 16px);
+  padding-top:calc(var(--nav) + 38px + 36px + 2px);
+  padding-bottom:calc(var(--tab) + var(--safe-b) + 20px);
   min-height:100dvh;
 }
 
-/* ── MONTH NAV ── */
+/* ══════════════════════════════════════════════════
+   MONTH NAV
+══════════════════════════════════════════════════ */
 .month-nav{
   display:flex;align-items:center;justify-content:space-between;
-  padding:12px 16px 8px;
+  padding:14px 14px 8px;
 }
-.month-title{font-size:16px;font-weight:700;letter-spacing:-.02em;color:var(--t)}
-.mnav-btns{display:flex;gap:6px;align-items:center}
+.month-title{
+  font-size:17px;font-weight:700;letter-spacing:-.03em;
+  color:var(--t);
+}
+.mnav-btns{display:flex;gap:5px;align-items:center}
 .mnav-btn{
-  width:34px;height:34px;border-radius:50%;border:none;
-  background:var(--s2);color:var(--t2);
-  display:flex;align-items:center;justify-content:center;cursor:pointer;
-  transition:background .15s;
+  width:30px;height:30px;border-radius:var(--rs);
+  border:1px solid var(--b);
+  background:var(--s1);color:var(--t2);
+  display:flex;align-items:center;justify-content:center;
+  cursor:pointer;transition:all .15s;
 }
-.mnav-btn:active{background:var(--s3)}
-.mnav-btn .material-icons{font-size:18px}
+.mnav-btn:active{background:var(--s2);transform:scale(.9)}
+.mnav-btn .material-icons{font-size:16px}
 .today-chip{
-  font-size:10px;font-weight:700;height:28px;
-  border-radius:14px;padding:0 12px;border:none;
+  font-size:9px;font-weight:700;height:26px;
+  border-radius:5px;padding:0 10px;
+  border:1px solid rgba(45,212,191,.3);
   color:var(--acc);background:var(--accl);
-  cursor:pointer;letter-spacing:.04em;text-transform:uppercase;
+  cursor:pointer;letter-spacing:.06em;text-transform:uppercase;
+  transition:all .15s;
 }
+.today-chip:active{background:rgba(45,212,191,.2)}
 
-/* ── MONTH GRID ── */
+/* ══════════════════════════════════════════════════
+   MONTH GRID — refined cells
+══════════════════════════════════════════════════ */
 .month-wrap{padding:0 10px 10px}
 .dow-row{
   display:grid;grid-template-columns:repeat(7,1fr);
-  gap:2px;margin-bottom:4px;
+  gap:2px;margin-bottom:3px;
 }
 .dow-lbl{
-  text-align:center;font-size:9px;font-weight:700;
-  color:var(--t3);text-transform:uppercase;letter-spacing:.06em;padding:3px 0;
+  text-align:center;font-size:8px;font-weight:700;
+  color:var(--t3);text-transform:uppercase;letter-spacing:.07em;padding:3px 0;
 }
 .cal-grid{display:grid;grid-template-columns:repeat(7,1fr);gap:2px}
 .cal-day{
   background:var(--s1);border-radius:var(--rs);
-  min-height:58px;padding:5px 4px 3px;
+  min-height:54px;padding:5px 4px 3px;
   position:relative;overflow:hidden;cursor:pointer;
-  transition:background .12s;border:1px solid transparent;
+  transition:all .15s;border:1px solid transparent;
 }
-.cal-day:active{background:var(--s2)}
-.cal-day.other{opacity:.28}
-.cal-day.today{border-color:var(--acc);background:var(--accl)}
+.cal-day:active{background:var(--s2);transform:scale(.96)}
+.cal-day.other{opacity:.22}
+.cal-day.today{
+  border-color:var(--acc);
+  background:var(--accl);
+  box-shadow:inset 0 0 0 1px rgba(45,212,191,.15);
+}
 .cal-day.today .day-num{color:var(--acc);font-weight:800}
-.cal-day.weekend{background:rgba(255,255,255,.025)}
+.cal-day.weekend{background:rgba(255,255,255,.018)}
 .day-num{
   font-size:11px;font-weight:600;color:var(--t2);
   font-family:'JetBrains Mono',monospace;line-height:1;margin-bottom:3px;
 }
 .day-pips{display:flex;flex-wrap:wrap;gap:2px;margin-top:2px}
-.pip{width:5px;height:5px;border-radius:50%;flex-shrink:0}
-.day-more{position:absolute;bottom:3px;right:4px;font-size:8px;color:var(--t3);font-weight:500}
+.pip{
+  width:4px;height:4px;border-radius:50%;flex-shrink:0;
+  box-shadow:0 0 4px currentColor;
+}
+.day-more{
+  position:absolute;bottom:3px;right:4px;
+  font-size:7px;color:var(--t3);font-weight:600;letter-spacing:.03em;
+}
 
-/* ── WEEK VIEW ── */
+/* ══════════════════════════════════════════════════
+   WEEK VIEW — fine grid
+══════════════════════════════════════════════════ */
 .week-wrap{padding:0 10px 10px}
 .week-head{
-  display:grid;grid-template-columns:36px repeat(7,1fr);gap:2px;margin-bottom:3px;
+  display:grid;grid-template-columns:28px repeat(7,1fr);gap:2px;margin-bottom:2px;
 }
-.wh-col{text-align:center;padding:5px 2px;border-radius:var(--rs);background:var(--s1)}
-.wh-dow{font-size:8px;font-weight:700;color:var(--t3);text-transform:uppercase;letter-spacing:.05em}
-.wh-num{font-size:14px;font-weight:700;color:var(--t2);font-family:'JetBrains Mono',monospace;line-height:1;margin-top:2px}
-.wh-col.today{background:var(--accl)}
+.wh-col{
+  text-align:center;padding:5px 2px;
+  border-radius:var(--rs);background:var(--s1);
+  border:1px solid var(--b);
+}
+.wh-dow{
+  font-size:7px;font-weight:700;color:var(--t3);
+  text-transform:uppercase;letter-spacing:.06em;
+}
+.wh-num{
+  font-size:15px;font-weight:700;color:var(--t2);
+  font-family:'JetBrains Mono',monospace;line-height:1;margin-top:2px;
+}
+.wh-col.today{background:var(--accl);border-color:rgba(45,212,191,.2)}
 .wh-col.today .wh-num{color:var(--acc)}
-.week-body{display:grid;grid-template-columns:36px repeat(7,1fr);gap:2px}
+.week-body{display:grid;grid-template-columns:28px repeat(7,1fr);gap:2px}
 .h-lbl{
-  font-size:8px;color:var(--t3);font-family:'JetBrains Mono',monospace;
-  text-align:right;padding-right:4px;display:flex;align-items:flex-start;
-  padding-top:3px;height:50px;
+  font-size:7px;color:var(--t3);
+  font-family:'JetBrains Mono',monospace;
+  text-align:right;padding-right:3px;
+  display:flex;align-items:flex-start;
+  padding-top:3px;height:48px;letter-spacing:-.01em;
 }
-.w-slot{height:50px;background:var(--s1);border-radius:3px;position:relative;overflow:hidden}
-.w-slot.today-col{background:rgba(0,191,165,.05);border:1px solid rgba(0,191,165,.12)}
+.w-slot{
+  height:48px;background:var(--s1);
+  border-radius:3px;position:relative;overflow:hidden;
+  border:1px solid transparent;
+}
+.w-slot.today-col{
+  background:rgba(45,212,191,.04);
+  border-color:rgba(45,212,191,.08);
+}
 .w-event{
-  position:absolute;left:1px;right:1px;
-  border-radius:4px;padding:2px 4px;
-  font-size:8px;font-weight:600;line-height:1.25;overflow:hidden;
-  cursor:pointer;transition:filter .12s;
+  position:absolute;left:1px;right:1px;top:1px;
+  border-radius:3px;padding:2px 4px;
+  font-size:8px;font-weight:600;line-height:1.3;
+  overflow:hidden;cursor:pointer;
+  transition:filter .12s;
 }
 .w-event:active{filter:brightness(.82)}
 
-/* ── DAY VIEW ── */
+/* ══════════════════════════════════════════════════
+   DAY VIEW — fine vehicle cards
+══════════════════════════════════════════════════ */
 .day-wrap{padding:0 10px 10px}
 .veh-card{
-  background:var(--s1);border-radius:var(--r);
-  border:1px solid var(--bs);overflow:hidden;margin-bottom:8px;
+  background:var(--s1);
+  border-radius:var(--r);
+  border:1px solid var(--b);
+  overflow:hidden;margin-bottom:7px;
+  transition:border-color .15s;
 }
+.veh-card:has(.res-row:hover){border-color:var(--bs)}
 .veh-head{
   display:flex;align-items:center;gap:10px;
-  padding:10px 12px;border-bottom:1px solid var(--b);
+  padding:10px 12px 9px;
+  border-bottom:1px solid var(--b);
+  background:linear-gradient(to right,rgba(45,212,191,.025),transparent);
 }
-.veh-model{font-size:12px;font-weight:700;letter-spacing:-.01em;flex:1;min-width:0;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.veh-model{
+  font-size:12px;font-weight:600;letter-spacing:-.015em;
+  flex:1;min-width:0;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;
+  color:var(--t);
+}
 .plate-chip{
-  font-family:'JetBrains Mono',monospace;font-size:10px;font-weight:700;
-  letter-spacing:.06em;color:var(--c-blu);background:var(--cl-blu);
-  border-radius:5px;padding:2px 8px;white-space:nowrap;border:1px solid rgba(130,177,255,.2);
+  font-family:'JetBrains Mono',monospace;
+  font-size:9px;font-weight:700;letter-spacing:.07em;
+  color:var(--c-blu);background:var(--cl-blu);
+  border-radius:4px;padding:2px 7px;white-space:nowrap;
+  border:1px solid rgba(96,165,250,.15);
 }
-.fuel-row{display:flex;align-items:center;gap:4px;flex-shrink:0}
-.fbar{width:28px;height:3px;background:var(--b);border-radius:2px;overflow:hidden}
-.fbar-f{height:100%;border-radius:2px}
-.fuel-txt{font-size:9px;color:var(--t3);font-family:'JetBrains Mono',monospace}
-.veh-body{padding:8px 12px}
+.fuel-row{display:flex;align-items:center;gap:5px;flex-shrink:0}
+.fbar{
+  width:24px;height:2px;
+  background:var(--s4);border-radius:1px;overflow:hidden;
+}
+.fbar-f{height:100%;border-radius:1px;transition:width .4s ease}
+.fuel-txt{
+  font-size:9px;color:var(--t3);
+  font-family:'JetBrains Mono',monospace;letter-spacing:-.01em;
+}
+.veh-body{padding:6px 10px 8px}
 .res-row{
   display:flex;align-items:center;gap:8px;
-  padding:8px 10px;border-radius:var(--rs);
-  cursor:pointer;transition:filter .12s;margin-bottom:4px;
+  padding:8px 8px;border-radius:var(--rs);
+  cursor:pointer;transition:background .12s;
+  margin-bottom:3px;
 }
 .res-row:last-child{margin-bottom:0}
-.res-row:active{filter:brightness(.82)}
-.res-stripe{width:3px;align-self:stretch;border-radius:2px;flex-shrink:0;min-height:32px}
+.res-row:active{background:var(--s3)}
+.res-stripe{
+  width:2px;align-self:stretch;border-radius:1px;
+  flex-shrink:0;min-height:28px;opacity:.8;
+}
 .res-info{flex:1;min-width:0}
-.res-name{font-size:12px;font-weight:500;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
-.res-dates{font-size:9px;color:var(--t3);margin-top:2px;font-family:'JetBrains Mono',monospace}
+.res-name{
+  font-size:12px;font-weight:500;
+  white-space:nowrap;overflow:hidden;text-overflow:ellipsis;
+  color:var(--t);letter-spacing:-.01em;
+}
+.res-dates{
+  font-size:9px;color:var(--t3);margin-top:2px;
+  font-family:'JetBrains Mono',monospace;letter-spacing:-.01em;
+}
 .status-chip{
-  font-size:8px;font-weight:700;border-radius:10px;
-  padding:2px 7px;white-space:nowrap;flex-shrink:0;text-transform:uppercase;letter-spacing:.04em;
+  font-size:8px;font-weight:700;border-radius:4px;
+  padding:2px 6px;white-space:nowrap;flex-shrink:0;
+  text-transform:uppercase;letter-spacing:.05em;
 }
 .cta-btn{
-  width:30px;height:30px;border-radius:50%;background:var(--s2);border:none;
-  color:var(--t2);display:flex;align-items:center;justify-content:center;
-  cursor:pointer;flex-shrink:0;
+  width:28px;height:28px;border-radius:7px;
+  background:var(--s2);border:1px solid var(--b);
+  color:var(--t3);display:flex;align-items:center;
+  justify-content:center;cursor:pointer;flex-shrink:0;
+  transition:all .12s;
 }
-.cta-btn .material-icons{font-size:16px}
-.cta-btn:active{background:var(--s3)}
-.no-res{font-size:11px;color:var(--t3);padding:8px 0;text-align:center}
+.cta-btn .material-icons{font-size:15px}
+.cta-btn:active{background:var(--s3);color:var(--acc)}
+.no-res{
+  font-size:11px;color:var(--t3);
+  padding:10px 0;text-align:center;letter-spacing:.01em;
+}
 
-/* ── BADGES ── */
-.badge-row{display:flex;gap:4px;flex-wrap:wrap;margin-top:3px}
+/* ══════════════════════════════════════════════════
+   BADGES — fine pill style
+══════════════════════════════════════════════════ */
+.badge-row{display:flex;gap:3px;flex-wrap:wrap;margin-top:4px;align-items:center}
 .badge{
-  display:inline-flex;align-items:center;gap:3px;
-  font-size:8px;font-weight:700;border-radius:4px;
-  padding:2px 6px;text-transform:uppercase;letter-spacing:.04em;
+  display:inline-flex;align-items:center;gap:2px;
+  font-size:7px;font-weight:700;border-radius:3px;
+  padding:2px 5px;text-transform:uppercase;letter-spacing:.06em;
 }
-.badge-maint{background:var(--cl-err);color:var(--c-err);animation:pulse-badge 2s infinite}
-.badge-transfer{background:rgba(255,215,64,.13);color:#FFD740;animation:pulse-badge 2s infinite}
-@keyframes pulse-badge{0%,100%{opacity:1}50%{opacity:.55}}
+.badge-maint{
+  background:var(--cl-err);color:var(--c-err);
+  border:1px solid rgba(248,113,113,.2);
+  animation:pulse-badge 2.5s infinite;
+}
+.badge-transfer{
+  background:rgba(245,158,11,.10);color:var(--c-new);
+  border:1px solid rgba(245,158,11,.2);
+  animation:pulse-badge 2.5s infinite;
+}
+@keyframes pulse-badge{0%,100%{opacity:1}50%{opacity:.5}}
 
-/* ── FLEET LIST ── */
+/* ══════════════════════════════════════════════════
+   FLEET LIST — linear-style rows
+══════════════════════════════════════════════════ */
 .fleet-wrap{padding:0 10px 10px}
 .fl-item{
   background:var(--s1);border-radius:var(--r);
-  border:1px solid var(--bs);
+  border:1px solid var(--b);
   display:flex;align-items:center;gap:12px;
-  padding:12px 14px;margin-bottom:7px;
-  cursor:pointer;transition:background .12s;
+  padding:11px 13px;margin-bottom:5px;
+  cursor:pointer;transition:all .15s;
 }
-.fl-item:active{background:var(--s2)}
+.fl-item:active{background:var(--s2);transform:scale(.99)}
 .fl-avatar{
-  width:38px;height:38px;border-radius:50%;
-  background:var(--cl-blu);
+  width:34px;height:34px;border-radius:8px;
+  background:var(--s3);border:1px solid var(--b);
   display:flex;align-items:center;justify-content:center;flex-shrink:0;
 }
-.fl-avatar .material-icons{font-size:20px;color:var(--c-blu)}
+.fl-avatar .material-icons{font-size:17px;color:var(--t3)}
 .fl-info{flex:1;min-width:0}
-.fl-model{font-size:12px;font-weight:700;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
-.fl-sub{font-size:10px;color:var(--t3);margin-top:2px;display:flex;align-items:center;gap:6px;flex-wrap:wrap}
+.fl-model{
+  font-size:12px;font-weight:600;letter-spacing:-.015em;
+  white-space:nowrap;overflow:hidden;text-overflow:ellipsis;color:var(--t);
+}
+.fl-sub{
+  font-size:9px;color:var(--t3);margin-top:3px;
+  display:flex;align-items:center;gap:6px;flex-wrap:wrap;
+  letter-spacing:.01em;
+}
 .fl-status{
-  font-size:9px;font-weight:700;border-radius:10px;
-  padding:3px 8px;text-transform:uppercase;letter-spacing:.04em;white-space:nowrap;
+  font-size:8px;font-weight:700;border-radius:4px;
+  padding:2px 7px;text-transform:uppercase;letter-spacing:.06em;white-space:nowrap;
 }
 
-/* ── BOTTOM NAV BAR (Material) ── */
+/* ══════════════════════════════════════════════════
+   BOTTOM NAV — glass, minimal
+══════════════════════════════════════════════════ */
 .bottom-nav{
   position:fixed;bottom:0;left:0;right:0;z-index:90;
   height:calc(var(--tab) + var(--safe-b));
-  background:#1B5E20;
-  border-top:1px solid rgba(0,0,0,.3);
-  display:flex;align-items:flex-start;padding-top:4px;
-  box-shadow:0 -2px 8px rgba(0,0,0,.35);
+  background:rgba(10,10,11,.92);
+  backdrop-filter:blur(20px) saturate(180%);
+  -webkit-backdrop-filter:blur(20px) saturate(180%);
+  border-top:1px solid var(--b);
+  display:flex;align-items:flex-start;padding-top:5px;
 }
 .nav-item{
   flex:1;display:flex;flex-direction:column;align-items:center;gap:2px;
-  font-size:9px;font-weight:500;color:rgba(255,255,255,.45);
-  border:none;background:none;cursor:pointer;padding:6px 4px;
-  text-transform:uppercase;letter-spacing:.04em;transition:color .15s;
+  font-size:8px;font-weight:700;color:var(--t3);
+  border:none;background:none;cursor:pointer;padding:5px 4px;
+  text-transform:uppercase;letter-spacing:.06em;transition:color .18s;
 }
-.nav-item .material-icons{font-size:22px;transition:color .15s}
-.nav-item.active{color:#fff}
-.nav-item.active .material-icons{color:#69F0AE}
+.nav-item .material-icons{font-size:20px;transition:color .18s}
+.nav-item.active{color:var(--t)}
+.nav-item.active .material-icons{color:var(--acc)}
 
-/* ── FAB (for checklist launch) ── */
+/* ══════════════════════════════════════════════════
+   FAB — refined
+══════════════════════════════════════════════════ */
 .fab{
-  position:fixed;right:20px;
-  bottom:calc(var(--tab) + var(--safe-b) + 14px);
+  position:fixed;right:16px;
+  bottom:calc(var(--tab) + var(--safe-b) + 12px);
   z-index:95;
-  width:52px;height:52px;border-radius:50%;
-  background:var(--acc);color:#000;border:none;
-  display:none;flex-direction:column;align-items:center;justify-content:center;
-  box-shadow:0 4px 16px rgba(0,191,165,.45);
-  cursor:pointer;font-size:11px;font-weight:700;font-family:'Inter',sans-serif;
-  transition:transform .15s,box-shadow .15s;
+  width:48px;height:48px;border-radius:14px;
+  background:var(--acc);color:var(--t-inv);border:none;
+  display:none;align-items:center;justify-content:center;
+  box-shadow:0 4px 20px rgba(45,212,191,.35), var(--acc-glow);
+  cursor:pointer;transition:transform .15s,box-shadow .15s;
 }
-.fab:active{transform:scale(.92);box-shadow:0 2px 8px rgba(0,191,165,.3)}
-.fab .material-icons{font-size:22px}
+.fab:active{transform:scale(.9);box-shadow:0 2px 8px rgba(45,212,191,.2)}
+.fab .material-icons{font-size:20px}
 .fab.show{display:flex}
 
-/* ── BOTTOM SHEETS ── */
+/* ══════════════════════════════════════════════════
+   BOTTOM SHEETS — ultra-refined
+══════════════════════════════════════════════════ */
 .sheet-overlay{
-  position:fixed;inset:0;background:rgba(0,0,0,.65);
+  position:fixed;inset:0;
+  background:rgba(0,0,0,.72);
+  backdrop-filter:blur(6px);
+  -webkit-backdrop-filter:blur(6px);
   z-index:200;display:none;flex-direction:column;justify-content:flex-end;
 }
 .sheet-overlay.open{display:flex}
 .sheet{
-  background:#1e1e1e;
-  border-radius:16px 16px 0 0;
+  background:var(--s1);
+  border-radius:18px 18px 0 0;
+  border:1px solid var(--b);
+  border-bottom:none;
   max-height:88dvh;overflow-y:auto;
-  padding-bottom:calc(20px + var(--safe-b));
-  animation:slideUp .22s cubic-bezier(.4,0,.2,1);
+  padding-bottom:calc(24px + var(--safe-b));
+  animation:slideUp .2s cubic-bezier(.32,0,.67,0);
 }
-@keyframes slideUp{from{transform:translateY(55%);opacity:.3}to{transform:translateY(0);opacity:1}}
-.drag-handle{width:36px;height:4px;border-radius:2px;background:var(--bs);margin:12px auto 0}
-.sheet-title{font-size:16px;font-weight:700;letter-spacing:-.02em;color:var(--t)}
-.sheet-sub{font-size:11px;color:var(--t3);margin-top:3px;font-family:'JetBrains Mono',monospace}
-.sheet-head{padding:14px 18px 10px;border-bottom:1px solid var(--b)}
-.sheet-body{padding:12px 18px 4px}
+@keyframes slideUp{from{transform:translateY(60%);opacity:.2}to{transform:translateY(0);opacity:1}}
+.drag-handle{
+  width:32px;height:3px;border-radius:2px;
+  background:var(--s4);margin:10px auto 0;
+}
+.sheet-title{
+  font-size:16px;font-weight:700;letter-spacing:-.025em;color:var(--t);
+}
+.sheet-sub{
+  font-size:10px;color:var(--t3);margin-top:3px;
+  font-family:'JetBrains Mono',monospace;letter-spacing:.01em;
+}
+.sheet-head{
+  padding:14px 18px 10px;
+  border-bottom:1px solid var(--b);
+  background:linear-gradient(to bottom,rgba(45,212,191,.03),transparent);
+}
+.sheet-body{padding:10px 18px 4px}
 .detail-row{
   display:flex;justify-content:space-between;align-items:flex-start;
-  padding:10px 0;border-bottom:1px solid var(--b);
+  padding:9px 0;border-bottom:1px solid var(--b);gap:12px;
 }
 .detail-row:last-child{border-bottom:none}
-.detail-lbl{font-size:11px;color:var(--t3);font-weight:500}
-.detail-val{font-size:12px;font-weight:600;text-align:right;max-width:60%}
-.detail-val.mono{font-family:'JetBrains Mono',monospace;font-size:11px}
-.sheet-actions{padding:6px 18px 0;display:flex;flex-direction:column;gap:8px}
+.detail-lbl{
+  font-size:11px;color:var(--t3);font-weight:500;
+  white-space:nowrap;flex-shrink:0;
+}
+.detail-val{
+  font-size:12px;font-weight:600;text-align:right;
+  color:var(--t);min-width:0;word-break:break-word;
+}
+.detail-val.mono{
+  font-family:'JetBrains Mono',monospace;
+  font-size:11px;letter-spacing:-.01em;
+}
+.sheet-actions{
+  padding:8px 18px 0;display:flex;flex-direction:column;gap:7px;
+}
 .sheet-btn{
-  width:100%;padding:14px;border:none;border-radius:var(--rs);
-  font-size:14px;font-weight:700;font-family:'Inter',sans-serif;
-  cursor:pointer;display:flex;align-items:center;justify-content:center;gap:8px;
-  letter-spacing:.01em;transition:all .15s;
+  width:100%;padding:13px;border:none;
+  border-radius:var(--r);
+  font-size:14px;font-weight:700;
+  font-family:'Inter',sans-serif;
+  cursor:pointer;display:flex;align-items:center;
+  justify-content:center;gap:8px;
+  letter-spacing:.005em;transition:all .15s;
 }
 .sheet-btn:active{transform:scale(.97)}
 .sheet-btn.primary{
   background:linear-gradient(135deg,var(--acc),var(--acc2));
-  color:#fff;box-shadow:0 3px 12px rgba(0,191,165,.3);
+  color:var(--t-inv);
+  box-shadow:0 3px 14px rgba(45,212,191,.25), var(--acc-glow);
 }
-.sheet-btn.secondary{background:var(--s2);color:var(--t2)}
-.sheet-btn .material-icons{font-size:18px}
+.sheet-btn.primary:active{box-shadow:none}
+.sheet-btn.secondary{
+  background:var(--s2);color:var(--t2);
+  border:1px solid var(--b);
+}
+.sheet-btn .material-icons{font-size:17px}
 
-/* ── CFG SHEET ── */
+/* ══════════════════════════════════════════════════
+   CFG SHEET — fine settings UI
+══════════════════════════════════════════════════ */
 .cfg-lbl{
   font-size:9px;font-weight:700;color:var(--t3);
-  text-transform:uppercase;letter-spacing:.08em;display:block;margin:12px 0 5px;
+  text-transform:uppercase;letter-spacing:.09em;
+  display:block;margin:13px 0 5px;
 }
 .cfg-input{
-  width:100%;background:var(--s2);border:1px solid var(--bs);
-  border-radius:var(--rs);padding:10px 12px;
-  font-size:12px;color:var(--t);font-family:'JetBrains Mono',monospace;
-  outline:none;transition:border-color .15s;
+  width:100%;background:var(--s2);
+  border:1px solid var(--b);border-radius:var(--rs);
+  padding:10px 12px;font-size:11px;color:var(--t);
+  font-family:'JetBrains Mono',monospace;
+  outline:none;transition:border-color .15s,box-shadow .15s;letter-spacing:.01em;
 }
-.cfg-input:focus{border-color:var(--acc)}
+.cfg-input:focus{border-color:var(--acc);box-shadow:0 0 0 3px rgba(45,212,191,.12)}
 .gh-panel{
-  background:var(--s2);border-radius:var(--rs);
-  padding:12px;margin-top:10px;display:none;
+  background:var(--s2);border:1px solid var(--b);
+  border-radius:var(--rs);padding:12px;margin-top:10px;display:none;
 }
 .save-btn{
-  width:100%;padding:14px;margin-top:16px;
+  width:100%;padding:13px;margin-top:16px;
   background:linear-gradient(135deg,var(--acc),var(--acc2));
-  color:#fff;border:none;border-radius:var(--rs);
+  color:var(--t-inv);border:none;border-radius:var(--r);
   font-size:14px;font-weight:700;font-family:'Inter',sans-serif;
   cursor:pointer;letter-spacing:.01em;
-  box-shadow:0 3px 12px rgba(0,191,165,.3);
+  box-shadow:0 3px 14px rgba(45,212,191,.25);transition:all .15s;
 }
-.file-chip{
-  display:inline-flex;align-items:center;gap:5px;
-  padding:8px 12px;background:var(--s2);
-  border:1px solid var(--bs);border-radius:var(--rs);
-  font-size:11px;font-weight:500;color:var(--t2);cursor:pointer;
-}
+.save-btn:active{transform:scale(.97);box-shadow:none}
 .preset-btns{display:flex;gap:8px;flex-wrap:wrap;margin-top:10px}
 .preset-btn{
   flex:1;padding:9px;background:var(--s2);color:var(--t2);
-  border:1px solid var(--bs);border-radius:var(--rs);
+  border:1px solid var(--b);border-radius:var(--rs);
   font-size:11px;font-weight:600;cursor:pointer;font-family:'Inter',sans-serif;
-  display:flex;align-items:center;justify-content:center;gap:5px;
+  display:flex;align-items:center;justify-content:center;gap:5px;transition:all .15s;
 }
-/* ── EMPTY ── */
-.empty{padding:48px 20px;text-align:center;color:var(--t3)}
-.empty .material-icons{font-size:42px;margin-bottom:10px;display:block}
-.empty p{font-size:12px;line-height:1.6}
+.preset-btn:active{background:var(--s3)}
+/* ══════════════════════════════════════════════════
+   EMPTY STATE + UTILS + FINE DESIGN MARKER
+══════════════════════════════════════════════════ */
+/* fine-design v2.0 */
+.empty{padding:52px 24px;text-align:center;color:var(--t3)}
+.empty .material-icons{
+  font-size:38px;margin-bottom:12px;display:block;
+  color:var(--s4);
+}
+.empty p{font-size:12px;line-height:1.7;color:var(--t3)}
+
+/* Divider */
+.divider{height:1px;background:var(--b);margin:8px 0}
+
+/* Section header */
+.section-hd{
+  font-size:10px;font-weight:700;color:var(--t3);
+  text-transform:uppercase;letter-spacing:.09em;
+  padding:10px 14px 4px;
+}
 </style>
 </head>
 <body>
@@ -545,14 +768,7 @@ body{
         Guardar y recargar
       </button>
 
-      <div style="margin-top:16px;padding-top:14px;border-top:1px solid var(--b)">
-        <span class="cfg-lbl" style="margin-top:0">Carga manual</span>
-        <div style="display:flex;gap:8px;flex-wrap:wrap">
-          <label class="file-chip"><span class="material-icons" style="font-size:15px">directions_car</span>Parque<input type="file" id="fPque" accept=".txt" style="display:none"></label>
-          <label class="file-chip"><span class="material-icons" style="font-size:15px">event</span>Reservas<input type="file" id="fRes"  accept=".txt" style="display:none"></label>
-          <label class="file-chip"><span class="material-icons" style="font-size:15px">location_on</span>Telemática<input type="file" id="fTel"  accept=".txt" style="display:none"></label>
-        </div>
-      </div>
+
     </div>
   </div>
 </div>
@@ -566,6 +782,13 @@ let vYear = TODAY.getFullYear(), vMonth = TODAY.getMonth(), vDay = TODAY.getDate
 let curView = 'month';
 let ST = {pque:null, res:null, tel:null};
 let sheetRes = null;
+
+/* ── XSS PROTECTION ── */
+function esc(s){
+  if(s==null) return '—';
+  return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;')
+    .replace(/"/g,'&quot;').replace(/'/g,'&#39;');
+}
 
 const MONTHS = ['Enero','Febrero','Marzo','Abril','Mayo','Junio','Julio','Agosto','Septiembre','Octubre','Noviembre','Diciembre'];
 const DOW_L  = ['Domingo','Lunes','Martes','Miércoles','Jueves','Viernes','Sábado'];
@@ -628,17 +851,7 @@ function fmtDate(d){
 // ═══════════════════════════════════════════════════════════════════════
 // FILE INPUTS
 // ═══════════════════════════════════════════════════════════════════════
-function hookFile(id,key,parser){
-  document.getElementById(id).addEventListener('change',e=>{
-    const f=e.target.files[0]; if(!f) return;
-    const r=new FileReader();
-    r.onload=ev=>{ST[key]=parser(ev.target.result); setDot(key,'ok'); tryRender();};
-    r.readAsText(f);
-  });
-}
-hookFile('fPque','pque',parsePque);
-hookFile('fRes','res',parseRes);
-hookFile('fTel','tel',parseTel);
+// ── CARGA MANUAL DESACTIVADA ── (solo autoload desde servidor/GitHub)
 
 // ═══════════════════════════════════════════════════════════════════════
 // AUTOLOAD / CONFIG
@@ -651,8 +864,15 @@ function setDot(k,s){
   ['dot-'+k,'cdot-'+k].forEach(id=>{const el=document.getElementById(id);if(el)el.className='src-dot '+s;});
 }
 async function fetchTxt(url){
+  // Only allow relative paths or trusted origins
+  const ALLOWED = [location.origin, 'https://raw.githubusercontent.com', 'https://api.github.com'];
+  const isRelative = !url.startsWith('http');
+  const isAllowed  = ALLOWED.some(o => url.startsWith(o));
+  if(!isRelative && !isAllowed){
+    throw new Error('URL de origen no permitida: ' + url.slice(0,50));
+  }
   const r=await fetch(url,{cache:'no-store'});
-  if(!r.ok) throw new Error(r.status);
+  if(!r.ok) throw new Error(r.status+' '+r.statusText);
   return r.text();
 }
 async function autoloadFiles(){
@@ -935,7 +1155,7 @@ function openDaySheet(y,m,d){
       body+=`<div class="res-row" style="background:${cl}" onclick="openResSheetEnc('${enc}');closeSheet('daySheet')">
         <div class="res-stripe" style="background:${c}"></div>
         <div class="res-info">
-          <div class="res-name">${res.renter}</div>
+          <div class="res-name">${esc(res.renter)}</div>
           <div class="res-dates">${res.plate} · ${res.startTime}→${res.endTime}</div>
         </div>
         <span class="status-chip" style="background:${cl};color:${c}">${resBadgeLabel(res)}</span>
@@ -1041,7 +1261,7 @@ function renderDay(){
         resList+=`<div class="res-row" style="background:${cl}" onclick="openResSheetEnc('${enc}')">
           <div class="res-stripe" style="background:${c}"></div>
           <div class="res-info">
-            <div class="res-name">${res.renter}</div>
+            <div class="res-name">${esc(res.renter)}</div>
             <div class="res-dates">${fmtDate(res.start)} ${res.startTime} → ${fmtDate(res.end)} ${res.endTime}</div>
           </div>
           <span class="status-chip" style="background:${cl};color:${c}">${resBadgeLabel(res)}</span>
@@ -1057,10 +1277,10 @@ function renderDay(){
     html+=`<div class="veh-card">
       <div class="veh-head">
         <div style="flex:1;min-width:0">
-          <div class="veh-model">${veh.model}</div>
+          <div class="veh-model">${esc(veh.model)}</div>
           <div class="badge-row">
             <span class="plate-chip">${veh.plate}</span>
-            ${tel?`<span style="font-size:9px;color:var(--t3)">${tel.loc}</span>`:''}
+            ${tel?`<span style="font-size:9px;color:var(--t3)">${esc(tel.loc)}</span>`:''}
             ${alert?`<span class="badge badge-maint"><span class="material-icons" style="font-size:10px">warning</span> Service</span>`:''}
             ${trans?`<span class="badge badge-transfer"><span class="material-icons" style="font-size:10px">local_shipping</span> Traslado</span>`:''}
           </div>
@@ -1100,10 +1320,10 @@ function renderList(){
     html+=`<div class="fl-item" onclick="openVehicleSheet('${enc}')">
       <div class="fl-avatar"><span class="material-icons">directions_car</span></div>
       <div class="fl-info">
-        <div class="fl-model">${veh.model}</div>
+        <div class="fl-model">${esc(veh.model)}</div>
         <div class="fl-sub">
           <span class="plate-chip" style="font-size:9px">${veh.plate}</span>
-          ${tel?`<span>${tel.loc}</span>`:''}
+          ${tel?`<span>${esc(tel.loc)}</span>`:''}
           ${tel&&tel.km?`<span>${tel.km} km</span>`:''}
           ${trans?`<span style="color:#FFD740">⚡ traslado</span>`:''}
         </div>
@@ -1134,7 +1354,7 @@ function openResSheetEnc(enc){
 function openResSheet(res){
   sheetRes=res;
   const{c,cl}=resColor(res);
-  document.getElementById('sh-title').textContent=res.renter;
+  document.getElementById('sh-title').textContent=esc(res.renter);
   document.getElementById('sh-sub').textContent=res.plate+' · #'+res.code;
   const veh=ST.pque?ST.pque.find(v=>v.plate===res.plate):null;
   const tel=ST.tel?ST.tel[res.plate]:null;
@@ -1152,7 +1372,7 @@ function openResSheet(res){
     <div class="detail-row"><span class="detail-lbl">Retiro</span><span class="detail-val mono">${fmtDate(res.start)}  ${res.startTime||''}</span></div>
     <div class="detail-row"><span class="detail-lbl">Entrega</span><span class="detail-val mono">${fmtDate(res.end)}  ${res.endTime||''}</span></div>
     ${tel?`<div class="detail-row"><span class="detail-lbl">Km</span><span class="detail-val mono">${tel.km} km</span></div>`:''}
-    ${tel?`<div class="detail-row"><span class="detail-lbl">Ubicación</span><span class="detail-val">${tel.loc}</span></div>`:''}
+    ${tel?`<div class="detail-row"><span class="detail-lbl">Ubicación</span><span class="detail-val">${esc(tel.loc)}</span></div>`:''}
     ${fuelLine}
     <div class="detail-row"><span class="detail-lbl">Código</span><span class="detail-val mono">${res.code}</span></div>`;
   document.getElementById('sh-checklist').style.display='flex';
@@ -1167,11 +1387,11 @@ function openVehicleSheet(enc){
     const vRes=(ST.res||[]).filter(r=>r.plate===v.plate);
     const activeRes=vRes.filter(r=>r.start<=TODAY&&r.end>=TODAY);
     sheetRes=null;
-    document.getElementById('sh-title').textContent=v.model;
+    document.getElementById('sh-title').textContent=esc(v.model);
     document.getElementById('sh-sub').textContent=v.plate+(v.bodyType?' · '+v.bodyType:'');
     let body=`
       ${tel?`<div class="detail-row"><span class="detail-lbl">Km</span><span class="detail-val mono">${tel.km}</span></div>`:''}
-      ${tel?`<div class="detail-row"><span class="detail-lbl">Ubicación</span><span class="detail-val">${tel.loc}</span></div>`:''}
+      ${tel?`<div class="detail-row"><span class="detail-lbl">Ubicación</span><span class="detail-val">${esc(tel.loc)}</span></div>`:''}
       ${tel&&tel.fuel&&tel.fuel!=='-'?`<div class="detail-row"><span class="detail-lbl">Combustible</span><span class="detail-val">${tel.fuel}L / ${v.tankCap}L</span></div>`:''}
       <div class="detail-row"><span class="detail-lbl">Tanque</span><span class="detail-val">${v.tankCap}L</span></div>
       <div class="detail-row"><span class="detail-lbl">Reservas activas</span><span class="detail-val">${activeRes.length}</span></div>`;
@@ -1184,7 +1404,7 @@ function openVehicleSheet(enc){
           onclick="closeSheet('resSheet');setTimeout(()=>openResSheetEnc('${enc2}'),100)">
           <div style="width:3px;align-self:stretch;background:${c};border-radius:2px;flex-shrink:0"></div>
           <div style="flex:1;min-width:0">
-            <div style="font-size:12px;font-weight:600">${r.renter}</div>
+            <div style="font-size:12px;font-weight:600">${esc(r.renter)}</div>
             <div style="font-size:10px;color:var(--t3);font-family:'JetBrains Mono',monospace;margin-top:2px">${fmtDate(r.start)} → ${fmtDate(r.end)}</div>
           </div>
           <span class="status-chip" style="background:${cl};color:${c}">${resBadgeLabel(r)}</span>

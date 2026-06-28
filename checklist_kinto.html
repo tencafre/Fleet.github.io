@@ -443,6 +443,29 @@ function setVars(data) {
 }
 
 /* ─── INIT ─── */
+/* ─── DAMAGE PERSISTENCE ─── */
+var currentPlate = '';
+var damages = {1:[],2:[],3:[]};
+var DMG_PREFIX = 'fleetcal_dmg_';
+
+function saveDamages(plate) {
+  if (!plate) return;
+  try {
+    var all = [].concat(damages[1],damages[2],damages[3]);
+    localStorage.setItem(DMG_PREFIX + plate, JSON.stringify(all));
+  } catch(e) {}
+}
+function loadDamages(plate) {
+  if (!plate) return;
+  try {
+    var raw = localStorage.getItem(DMG_PREFIX + plate);
+    var saved = raw ? JSON.parse(raw) : [];
+    damages[1]=[]; damages[2]=[]; damages[3]=[];
+    saved.forEach(function(d){ if(damages[d.view]) damages[d.view].push(d); });
+    if (typeof renderAll === 'function') renderAll();
+  } catch(e) {}
+}
+
 /* ─── BODY TYPE → VEHICLE IMAGE KEY MAP ─── */
 const BODY_TYPE_MAP = {
   'SEDAN':      'SEDAN',
@@ -520,6 +543,8 @@ window.addEventListener('load', () => {
         ? BODY_TYPE_MAP[d.bodyType]
         : 'HATCHBACK';
       selectVehicle(vkey);
+      currentPlate = d.plate || '';
+      if (currentPlate) loadDamages(currentPlate);
 
       /* Populate fields */
       setVars({
