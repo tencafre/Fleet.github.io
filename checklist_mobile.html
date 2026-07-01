@@ -608,19 +608,24 @@ function selectVehicle(key) {
   document.querySelectorAll('.v-btn').forEach(b => {
     b.classList.toggle('active', b.dataset.v === key);
   });
-  document.getElementById('img-1').src = v.v1 || '';
-  document.getElementById('img-2').src = v.v2 || '';
-  document.getElementById('img-3').src = v.v3 || '';
   damages[1]=[]; damages[2]=[]; damages[3]=[];
+  // Wire onload BEFORE setting src — base64 images may be instant-cached
   [1,2,3].forEach(n => {
     const img = document.getElementById('img-'+n);
     const svg = document.getElementById('svg-'+n);
-    img.onload = () => {
-      svg.setAttribute('viewBox','0 0 '+img.naturalWidth+' '+img.naturalHeight);
+    const src = [v.v1||'', v.v2||'', v.v3||''][n-1];
+    const fresh = img.cloneNode(false);
+    img.parentNode.replaceChild(fresh, img);
+    const ni = document.getElementById('img-'+n);
+    ni.addEventListener('load', function() {
+      if (ni.naturalWidth) {
+        svg.setAttribute('viewBox','0 0 '+ni.naturalWidth+' '+ni.naturalHeight);
+      }
       document.getElementById('dmg-'+n).innerHTML = '';
-    };
-    if (img.complete && img.naturalWidth) {
-      svg.setAttribute('viewBox','0 0 '+img.naturalWidth+' '+img.naturalHeight);
+    });
+    ni.src = src;
+    if (ni.complete && ni.naturalWidth) {
+      ni.dispatchEvent(new Event('load'));
     }
   });
 }

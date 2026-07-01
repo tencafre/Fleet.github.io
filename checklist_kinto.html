@@ -335,6 +335,7 @@ const VEHICLES = {
 
 /* ─── STATE ─── */
 let currentVehicle = 'HATCHBACK';
+let currentPlate = '';
 let mode = 'R';
 const damages = {1:[],2:[],3:[]};
 
@@ -347,17 +348,40 @@ function selectVehicle(key) {
   });
   const v = VEHICLES[key];
   const nViews = v.views;
-  // set images
-  document.getElementById('img-1').src = v.v1 || '';
-  document.getElementById('img-2').src = v.v2 || '';
-  document.getElementById('img-3').src = v.v3 || '';
   // show/hide 3rd view
   const wrap = document.getElementById('car-views-wrap');
   wrap.className = 'car-views ' + (nViews === 3 ? 'views-3' : 'views-2');
   document.getElementById('view-3').style.display = nViews === 3 ? '' : 'none';
-  // clear damage and resync SVGs
+  // clear damages
   damages[1]=[];damages[2]=[];damages[3]=[];
-  setTimeout(() => { syncSVG(); renderAll(); }, 80);
+  // set images — wire onload BEFORE setting src so SVG syncs after render
+  let loaded = 0;
+  const imgs = [v.v1||'', v.v2||'', v.v3||''];
+  imgs.forEach((src, i) => {
+    const n = i + 1;
+    const img = document.getElementById('img-' + n);
+    // remove previous listeners by cloning
+    const fresh = img.cloneNode(false);
+    img.parentNode.replaceChild(fresh, img);
+    const newImg = document.getElementById('img-' + n);
+    newImg.addEventListener('load', function onceLoad() {
+      loaded++;
+      const svg = document.getElementById('svg-' + n);
+      if (svg && newImg.naturalWidth) {
+        svg.setAttribute('viewBox', '0 0 ' + newImg.naturalWidth + ' ' + newImg.naturalHeight);
+      }
+      newImg.removeEventListener('load', onceLoad);
+      if (loaded === nViews) renderAll();
+    });
+    newImg.addEventListener('error', function() {
+      console.warn('Image load error for view', n);
+    });
+    newImg.src = src;
+    // If already cached (base64 always is), onload may not fire — force it
+    if (newImg.complete && newImg.naturalWidth) {
+      newImg.dispatchEvent(new Event('load'));
+    }
+  });
 }
 
 /* ─── SVG SYNC ─── */
@@ -444,8 +468,7 @@ function setVars(data) {
 
 /* ─── INIT ─── */
 /* ─── DAMAGE PERSISTENCE ─── */
-var currentPlate = '';
-var damages = {1:[],2:[],3:[]};
+// currentPlate and damages declared in STATE block above
 var DMG_PREFIX = 'fleetcal_dmg_';
 
 function saveDamages(plate) {
@@ -526,9 +549,7 @@ function buildTireTable(tires, accs) {
 
 /* ─── AUTO-LOAD FROM FLEET CALENDAR ─── */
 window.addEventListener('load', () => {
-  [1,2,3].forEach(n => {
-    document.getElementById('img-'+n).addEventListener('load', syncSVG);
-  });
+  // img load listeners are now wired inside selectVehicle() per vehicle change
 
   const raw = localStorage.getItem('fleetcal_checklist_data');
 

@@ -665,9 +665,6 @@ input[type=file]{display:none}
     <button class="filebtn" onclick="openCfgModal()" title="Configurar fuentes de datos">
       <i class="ti ti-settings" style="font-size:13px"></i>
     </button>
-    <input type="file" id="fPque" accept=".txt" style="display:none">
-    <input type="file" id="fRes"  accept=".txt" style="display:none">
-    <input type="file" id="fTel"  accept=".txt" style="display:none">
     <button class="filebtn" id="btnTireOpen" onclick="openTireModal(null,null)" style="color:var(--accent);display:none">
       <i class="ti ti-tire" style="font-size:13px"></i> Neumáticos
     </button>
@@ -1609,13 +1606,7 @@ function renderCal(){
           <i class="ti ti-arrow-right" style="font-size:11px"></i> Aplicar rutas
         </button>
       </div>
-      <hr class="cfg-divider">
-      <div class="cfg-section-title">Carga manual (alternativa)</div>
-      <div style="display:flex;gap:8px;flex-wrap:wrap">
-        <label class="filebtn" for="fPque" style="font-size:11px"><i class="ti ti-upload" style="font-size:12px"></i> Parque</label>
-        <label class="filebtn" for="fRes"  style="font-size:11px"><i class="ti ti-upload" style="font-size:12px"></i> Reservas</label>
-        <label class="filebtn" for="fTel"  style="font-size:11px"><i class="ti ti-upload" style="font-size:12px"></i> Telemática</label>
-      </div>
+
     </div>
     <div class="cfg-foot">
       <span class="cfg-reload-note"><i class="ti ti-refresh" style="font-size:11px"></i> Auto-recarga cada vez que abrís la página</span>

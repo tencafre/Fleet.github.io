@@ -1152,7 +1152,7 @@ function openDaySheet(y,m,d){
     allRes.forEach(res=>{
       const{c,cl}=resColor(res);
       const enc=encodeURIComponent(JSON.stringify(res));
-      body+=`<div class="res-row" style="background:${cl}" onclick="openResSheetEnc('${enc}');closeSheet('daySheet')">
+      body+=`<div class="res-row" style="background:${cl}" data-enc="${enc}" data-close-day="1">
         <div class="res-stripe" style="background:${c}"></div>
         <div class="res-info">
           <div class="res-name">${esc(res.renter)}</div>
@@ -1210,7 +1210,7 @@ function renderWeek(){
         const{c,cl}=resColor(res);
         const enc=encodeURIComponent(JSON.stringify(res));
         evHTML+=`<div class="w-event" style="background:${cl};color:${c};border-left:2px solid ${c}"
-          onclick="openResSheetEnc('${enc}')">${res.renter.slice(0,8)}</div>`;
+          data-enc="${enc}">${esc(res.renter).slice(0,8)}</div>`;
       });
       body+=`<div class="w-slot${isT?' today-col':''}">${evHTML}</div>`;
     });
@@ -1258,14 +1258,14 @@ function renderDay(){
       vRes.forEach(res=>{
         const{c,cl}=resColor(res);
         const enc=encodeURIComponent(JSON.stringify(res));
-        resList+=`<div class="res-row" style="background:${cl}" onclick="openResSheetEnc('${enc}')">
+        resList+=`<div class="res-row" style="background:${cl}" data-enc="${enc}">
           <div class="res-stripe" style="background:${c}"></div>
           <div class="res-info">
             <div class="res-name">${esc(res.renter)}</div>
             <div class="res-dates">${fmtDate(res.start)} ${res.startTime} → ${fmtDate(res.end)} ${res.endTime}</div>
           </div>
           <span class="status-chip" style="background:${cl};color:${c}">${resBadgeLabel(res)}</span>
-          <button class="cta-btn" onclick="event.stopPropagation();openResSheetEnc('${enc}')">
+          <button class="cta-btn" data-enc="${enc}" data-cta="1">
             <span class="material-icons">assignment_turned_in</span>
           </button>
         </div>`;
@@ -1401,7 +1401,7 @@ function openVehicleSheet(enc){
         const{c,cl}=resColor(r);
         const enc2=encodeURIComponent(JSON.stringify(r));
         body+=`<div style="background:${cl};border-radius:8px;padding:8px 10px;margin-bottom:5px;display:flex;align-items:center;gap:8px;cursor:pointer"
-          onclick="closeSheet('resSheet');setTimeout(()=>openResSheetEnc('${enc2}'),100)">
+          data-enc2="${enc2}">
           <div style="width:3px;align-self:stretch;background:${c};border-radius:2px;flex-shrink:0"></div>
           <div style="flex:1;min-width:0">
             <div style="font-size:12px;font-weight:600">${esc(r.renter)}</div>
@@ -1458,6 +1458,34 @@ function navSelect(t){
 // ═══════════════════════════════════════════════════════════════════════
 // SWIPE NAVIGATION
 // ═══════════════════════════════════════════════════════════════════════
+// ── EVENT DELEGATION — all res row / event clicks ──
+document.addEventListener('click', function(e) {
+  // CTA button (assignment icon) — opens checklist sheet
+  const cta = e.target.closest('[data-cta]');
+  if (cta) {
+    e.stopPropagation();
+    const enc = cta.dataset.enc;
+    if (enc) openResSheetEnc(enc);
+    return;
+  }
+  // res-row or w-event
+  const row = e.target.closest('[data-enc]');
+  if (row && !row.dataset.cta) {
+    const enc = row.dataset.enc;
+    if (enc) {
+      if (row.dataset.closeDay) closeSheet('daySheet');
+      openResSheetEnc(enc);
+    }
+    return;
+  }
+  // vehicle sheet upcoming row
+  const row2 = e.target.closest('[data-enc2]');
+  if (row2) {
+    closeSheet('resSheet');
+    setTimeout(()=>openResSheetEnc(row2.dataset.enc2), 100);
+  }
+});
+
 let tsX=0;
 document.addEventListener('touchstart',e=>{tsX=e.touches[0].clientX;},{passive:true});
 document.addEventListener('touchend',e=>{
